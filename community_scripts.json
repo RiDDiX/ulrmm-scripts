@@ -1,0 +1,5403 @@
+[
+  {
+    "guid": "2309d289-4a4a-43b9-8ad3-c053cb9bd2aa",
+    "filename": "linux_agent_log_tail.sh",
+    "name": "Agent log tail",
+    "description": "Shows the last lines of the agent log: journald unit ulrmm-agent, else a log file under /opt/ulrmm-agent or /var/log, else syslog. Exit 3 when none exists.",
+    "shell": "shell",
+    "category": "Linux / Agent",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "LINES",
+        "label": "Lines",
+        "type": "integer",
+        "required": false,
+        "default": "100",
+        "help": "1 to 2000."
+      }
+    ]
+  },
+  {
+    "guid": "2f37c4cd-0700-4c0b-8540-afb518e91f3c",
+    "filename": "linux_agent_services_status.sh",
+    "name": "Agent services status",
+    "description": "Shows install, enable and run state of the agent and the MeshCentral agent (systemd or OpenRC) and the agent version. Exit 1 when the agent is not running.",
+    "shell": "shell",
+    "category": "Linux / Agent",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "49ee1408-9167-4211-ab74-74c4291ba05c",
+    "filename": "linux_antivirus_clamav_install.sh",
+    "name": "ClamAV install",
+    "description": "Installs ClamAV and freshclam with the system package manager, enables automatic signature updates and loads the signatures.",
+    "shell": "shell",
+    "category": "Linux / Antivirus",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 1800,
+    "variables": [
+      {
+        "name": "ENABLE_EPEL",
+        "label": "Add EPEL on RHEL family",
+        "type": "checkbox",
+        "required": false,
+        "default": "true",
+        "help": "ClamAV comes from EPEL on RHEL, AlmaLinux and Rocky Linux."
+      }
+    ]
+  },
+  {
+    "guid": "38c14a95-8484-44e6-8951-e2b4c0c3df84",
+    "filename": "linux_antivirus_clamav_scan.sh",
+    "name": "ClamAV scan",
+    "description": "Scans the given paths with clamscan and lists infected files without changing them. Exit 1 on infection, 2 on scan errors.",
+    "shell": "shell",
+    "category": "Linux / Antivirus",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 7200,
+    "variables": [
+      {
+        "name": "PATHS",
+        "label": "Paths to scan",
+        "type": "text",
+        "required": false,
+        "default": "/home,/root,/tmp,/var/tmp",
+        "help": "Absolute paths, comma or newline separated."
+      },
+      {
+        "name": "EXCLUDE",
+        "label": "Paths to skip",
+        "type": "text",
+        "required": false,
+        "default": "",
+        "help": "Absolute paths, comma or newline separated. /proc, /sys, /dev and /run are always skipped."
+      },
+      {
+        "name": "MAX_FILESIZE_MB",
+        "label": "Skip files larger than (MB)",
+        "type": "integer",
+        "required": false,
+        "default": "100",
+        "help": "Larger files are not scanned."
+      }
+    ]
+  },
+  {
+    "guid": "542e0bca-ab06-4706-8956-da0aa8da698e",
+    "filename": "linux_antivirus_clamav_update.sh",
+    "name": "ClamAV signature update",
+    "description": "Runs freshclam now, pausing the freshclam service for the run. Exit 1 when the update fails.",
+    "shell": "shell",
+    "category": "Linux / Antivirus",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 900
+  },
+  {
+    "guid": "f1432ea5-c1bc-4855-a3ee-b290696b9159",
+    "filename": "linux_antivirus_clamav_status.sh",
+    "name": "ClamAV status",
+    "description": "Checks that ClamAV is installed, how old the signatures are and whether automatic updates run.",
+    "shell": "shell",
+    "category": "Linux / Antivirus",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "WARN_DAYS",
+        "label": "Warn at signature age (days)",
+        "type": "integer",
+        "required": false,
+        "default": "2",
+        "help": "Signature age that counts as a warning."
+      },
+      {
+        "name": "FAIL_DAYS",
+        "label": "Fail at signature age (days)",
+        "type": "integer",
+        "required": false,
+        "default": "7",
+        "help": "Signature age that fails the check."
+      }
+    ]
+  },
+  {
+    "guid": "5f47527e-21d6-4d3e-b211-9d49e1130dcc",
+    "filename": "linux_antivirus_eset_install.sh",
+    "name": "ESET Endpoint Antivirus for Linux - install",
+    "description": "Installs ESET Endpoint Antivirus for Linux from your hosted .bin after a sha256 check, with the documented -y -f switches, and activates it.",
+    "shell": "shell",
+    "category": "Linux / Antivirus",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 3600,
+    "env": [
+      "PRODUCT=endpoint-antivirus"
+    ],
+    "variables": [
+      {
+        "name": "INSTALLER_URL",
+        "label": "Installer URL",
+        "type": "string",
+        "required": true,
+        "default": "",
+        "help": "https URL of eeau.x86_64.bin from ESET's download page."
+      },
+      {
+        "name": "INSTALLER_SHA256",
+        "label": "Installer sha256",
+        "type": "string",
+        "required": true,
+        "default": "",
+        "help": "sha256sum of the .bin; the installer is not run when it differs."
+      },
+      {
+        "name": "LICENSE_KEY",
+        "label": "License key",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "ESET license key for lic -k, never printed. Empty leaves activation to ESET PROTECT."
+      }
+    ]
+  },
+  {
+    "guid": "dec37d7f-56f9-4dca-b34f-e138c3116c44",
+    "filename": "linux_antivirus_eset_install.sh",
+    "name": "ESET Server Security for Linux - install",
+    "description": "Installs ESET Server Security for Linux from ESET's .bin after a sha256 check and activates it with the license key if given.",
+    "shell": "shell",
+    "category": "Linux / Antivirus",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 3600,
+    "env": [
+      "PRODUCT=server-security"
+    ],
+    "variables": [
+      {
+        "name": "INSTALLER_URL",
+        "label": "Installer URL",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "https URL of efs.x86_64.bin. Empty uses ESET's latest download."
+      },
+      {
+        "name": "INSTALLER_SHA256",
+        "label": "Installer sha256",
+        "type": "string",
+        "required": true,
+        "default": "",
+        "help": "sha256sum of the .bin; the installer is not run when it differs."
+      },
+      {
+        "name": "LICENSE_KEY",
+        "label": "License key",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "ESET license key for lic -k, never printed. Empty leaves activation to ESET PROTECT."
+      }
+    ]
+  },
+  {
+    "guid": "1eadb712-5a01-4679-a66b-25b5f5659f6c",
+    "filename": "linux_inventory_hardware_identity.sh",
+    "name": "Hardware identity collector",
+    "description": "Reads vendor, model and serial from sysfs DMI, dmidecode or the device tree. The last line is the serial number; exit 3 when the system has none.",
+    "shell": "shell",
+    "category": "Linux / Inventory",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "4d3c907b-d272-488a-9dcb-128d47c3084e",
+    "filename": "linux_inventory_kernel_report.sh",
+    "name": "Kernel report",
+    "description": "Shows the running kernel, installed kernels, kernel packages and whether a newer one needs a reboot. Read only.",
+    "shell": "shell",
+    "category": "Linux / Inventory",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "7c873e82-bb7a-4c68-9ec4-625da4f20a46",
+    "filename": "linux_inventory_listening_ports.sh",
+    "name": "Listening ports report",
+    "description": "Lists listening TCP and UDP sockets with the owning process (ss, netstat, or /proc without process names). Read only.",
+    "shell": "shell",
+    "category": "Linux / Inventory",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "4e0cdf6b-f162-496b-bf5b-d4ea2c666444",
+    "filename": "linux_inventory_logged_in_users.sh",
+    "name": "Logged-in users report",
+    "description": "Lists current logins, systemd sessions and the last ten logins. Read only.",
+    "shell": "shell",
+    "category": "Linux / Inventory",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "a490cab1-c72a-4643-9564-b0297b0441f5",
+    "filename": "linux_inventory_scheduled_jobs.sh",
+    "name": "Scheduled jobs report",
+    "description": "Lists system and per-user crontabs, cron.d, periodic directories, systemd timers and at jobs. Read only.",
+    "shell": "shell",
+    "category": "Linux / Inventory",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "9c75e14b-b6b7-4571-87ac-832a4341e072",
+    "filename": "linux_inventory_system_report.sh",
+    "name": "System report",
+    "description": "Prints distribution, kernel, uptime, virtualization, CPU, memory, disks, filesystems, addresses, default route, package managers, service manager and pending reboot. Read only.",
+    "shell": "shell",
+    "category": "Linux / Inventory",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "56e45095-8c4a-45c6-8b78-b7f05aa1cf23",
+    "filename": "linux_maintenance_container_prune.sh",
+    "name": "Container prune",
+    "description": "Removes stopped containers, dangling images and unused networks of docker or podman and reports the space before and after. Dry run by default.",
+    "shell": "shell",
+    "category": "Linux / Maintenance",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 600,
+    "variables": [
+      {
+        "name": "DRY_RUN",
+        "label": "Dry run",
+        "type": "checkbox",
+        "required": false,
+        "default": "true",
+        "help": "Only list what would be removed."
+      },
+      {
+        "name": "ALL_IMAGES",
+        "label": "All unused images",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Also remove tagged images no container uses."
+      },
+      {
+        "name": "VOLUMES",
+        "label": "Unused volumes",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Also remove volumes no container uses (data is lost)."
+      }
+    ]
+  },
+  {
+    "guid": "323b3c28-1ca6-448f-a59d-4639c360269f",
+    "filename": "linux_maintenance_filesystem_trim.sh",
+    "name": "Filesystem trim",
+    "description": "Runs fstrim on all mounted filesystems that support it. Exit 3 in containers or when fstrim is missing.",
+    "shell": "shell",
+    "category": "Linux / Maintenance",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 600
+  },
+  {
+    "guid": "1577ecb5-bbdb-473c-8a22-a8a727d48af0",
+    "filename": "linux_maintenance_journal_vacuum.sh",
+    "name": "Journal vacuum",
+    "description": "Shrinks the systemd journal to a size and optionally an age limit. Exit 3 on systems without a systemd journal.",
+    "shell": "shell",
+    "category": "Linux / Maintenance",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "MAX_SIZE_MB",
+        "label": "Keep at most (MB)",
+        "type": "integer",
+        "required": false,
+        "default": "500",
+        "help": "Journal is trimmed to this size."
+      },
+      {
+        "name": "MAX_AGE_DAYS",
+        "label": "Keep at most (days)",
+        "type": "integer",
+        "required": false,
+        "help": "Optional, also drops entries older than this."
+      }
+    ]
+  },
+  {
+    "guid": "435487b4-1fdd-4672-9b32-0df04a9765a0",
+    "filename": "linux_maintenance_package_cache_clean.sh",
+    "name": "Package cache clean",
+    "description": "Clears the package manager cache (apt, dnf, yum, zypper, pacman, apk) and reports the space freed. Exit 1 when cleaning fails, 3 without a package manager.",
+    "shell": "shell",
+    "category": "Linux / Maintenance",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 300
+  },
+  {
+    "guid": "44b0df7b-6604-4ca9-b3dd-12c6ed4fc6d7",
+    "filename": "linux_maintenance_remove_unused_packages.sh",
+    "name": "Remove unused packages",
+    "description": "Removes packages nothing depends on any more (apt, dnf, yum, zypper, pacman) and never the running kernel. Dry run by default. Alpine has nothing to remove.",
+    "shell": "shell",
+    "category": "Linux / Maintenance",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 600,
+    "variables": [
+      {
+        "name": "DRY_RUN",
+        "label": "Dry run",
+        "type": "checkbox",
+        "required": false,
+        "default": "true",
+        "help": "Only list what would be removed."
+      }
+    ]
+  },
+  {
+    "guid": "f7bd58c2-45a3-47b1-867f-e467e7b59cad",
+    "filename": "linux_maintenance_service_control.sh",
+    "name": "Service control",
+    "description": "Shows, starts, stops, restarts, enables or disables one service on systemd or OpenRC. Exit 1 when the service is not in the requested state. The agent services are protected, network services cannot be stopped or disabled.",
+    "shell": "shell",
+    "category": "Linux / Maintenance",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "SERVICE",
+        "label": "Service",
+        "type": "string",
+        "required": true,
+        "help": "Unit or init script name, for example nginx or sshd."
+      },
+      {
+        "name": "ACTION",
+        "label": "Action",
+        "type": "select",
+        "required": true,
+        "default": "status",
+        "options": [
+          "status",
+          "start",
+          "stop",
+          "restart",
+          "enable",
+          "disable"
+        ]
+      }
+    ]
+  },
+  {
+    "guid": "a087da36-3cf3-4aa4-95e2-4559092d02b4",
+    "filename": "linux_maintenance_temp_files_clean.sh",
+    "name": "Temporary files clean",
+    "description": "Deletes files in /tmp and /var/tmp that were neither modified, read nor changed for the given number of days; files held open by a process are kept. Dry run by default.",
+    "shell": "shell",
+    "category": "Linux / Maintenance",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 300,
+    "variables": [
+      {
+        "name": "DRY_RUN",
+        "label": "Dry run",
+        "type": "checkbox",
+        "required": false,
+        "default": "true",
+        "help": "Only list what would be removed."
+      },
+      {
+        "name": "MAX_AGE_DAYS",
+        "label": "Older than (days)",
+        "type": "integer",
+        "required": false,
+        "default": "10",
+        "help": "Files untouched for this long are removed."
+      }
+    ]
+  },
+  {
+    "guid": "e4a70e87-bd4c-4b34-a059-3da23f7c3d14",
+    "filename": "linux_monitoring_certificate_expiry.sh",
+    "name": "Certificate expiry check",
+    "description": "Checks expiry of PEM certificate files and TLS endpoints (host:port) with openssl. Exit 2 inside the warning window, 1 when expired, unreachable or inside the error window.",
+    "shell": "shell",
+    "category": "Linux / Monitoring",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 180,
+    "variables": [
+      {
+        "name": "TARGETS",
+        "label": "Targets",
+        "type": "text",
+        "required": true,
+        "help": "Absolute file path or host:port. One per line or comma separated."
+      },
+      {
+        "name": "WARN_DAYS",
+        "label": "Warn days",
+        "type": "integer",
+        "required": false,
+        "default": "30",
+        "help": "Days before expiry that count as a warning."
+      },
+      {
+        "name": "ERROR_DAYS",
+        "label": "Error days",
+        "type": "integer",
+        "required": false,
+        "default": "7",
+        "help": "Days before expiry that count as a failure."
+      }
+    ]
+  },
+  {
+    "guid": "b5030211-b5c8-4413-978f-894f557c6582",
+    "filename": "linux_monitoring_container_health.sh",
+    "name": "Container health check",
+    "description": "Finds unhealthy, restarting and non-zero-exited containers with docker or podman. Exit 1 when any is found, 3 without an engine or daemon.",
+    "shell": "shell",
+    "category": "Linux / Monitoring",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "IGNORE",
+        "label": "Ignored containers",
+        "type": "text",
+        "required": false,
+        "help": "Container names to skip. One per line or comma separated."
+      }
+    ]
+  },
+  {
+    "guid": "5bac6ee2-9757-4c2e-b979-0111c45e482b",
+    "filename": "linux_monitoring_disk_space.sh",
+    "name": "Disk space check",
+    "description": "Checks used space on local filesystems (ext4, xfs, btrfs, zfs, vfat...) and skips tmpfs, overlay, squashfs and network mounts. Exit 2 at the warning level, 1 at the error level, 3 on bad input.",
+    "shell": "shell",
+    "category": "Linux / Monitoring",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "WARN_PERCENT",
+        "label": "Warn at or above (%)",
+        "type": "integer",
+        "required": false,
+        "default": "85",
+        "help": "Used space that counts as a warning."
+      },
+      {
+        "name": "ERROR_PERCENT",
+        "label": "Error at or above (%)",
+        "type": "integer",
+        "required": false,
+        "default": "95",
+        "help": "Used space that counts as a failure."
+      },
+      {
+        "name": "EXCLUDE",
+        "label": "Excluded mount points",
+        "type": "text",
+        "required": false,
+        "help": "Mount points to skip. One per line or comma separated."
+      }
+    ]
+  },
+  {
+    "guid": "690ba466-be7b-436d-8ff1-ba006d4da0a8",
+    "filename": "linux_monitoring_failed_logins.sh",
+    "name": "Failed logins report",
+    "description": "Counts failed SSH logins in the last hours from journald or auth.log/secure and lists the top source addresses. Exit 2 when the threshold is reached.",
+    "shell": "shell",
+    "category": "Linux / Monitoring",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "HOURS",
+        "label": "Hours to look back",
+        "type": "integer",
+        "required": false,
+        "default": "24",
+        "help": "1 to 168."
+      },
+      {
+        "name": "THRESHOLD",
+        "label": "Warning threshold",
+        "type": "integer",
+        "required": false,
+        "default": "50",
+        "help": "Number of failures that counts as a warning."
+      }
+    ]
+  },
+  {
+    "guid": "0f989215-1006-48c3-a3ff-e9b6468c2149",
+    "filename": "linux_monitoring_failed_services.sh",
+    "name": "Failed services check",
+    "description": "Lists failed systemd units or crashed OpenRC services. Exit 1 when any is found, 3 when neither systemd nor OpenRC is running.",
+    "shell": "shell",
+    "category": "Linux / Monitoring",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "IGNORE",
+        "label": "Ignored services",
+        "type": "text",
+        "required": false,
+        "help": "Service names to skip. One per line or comma separated."
+      }
+    ]
+  },
+  {
+    "guid": "80fb2490-df42-43b9-a032-18c1e11f0118",
+    "filename": "linux_monitoring_inode_usage.sh",
+    "name": "Inode usage check",
+    "description": "Checks inode usage on filesystems that have inode tables (ext4, xfs, f2fs, jfs...). Exit 2 at the warning level, 1 at the error level, 3 when no such filesystem exists.",
+    "shell": "shell",
+    "category": "Linux / Monitoring",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "WARN_PERCENT",
+        "label": "Warn at or above (%)",
+        "type": "integer",
+        "required": false,
+        "default": "85",
+        "help": "Used inodes that count as a warning."
+      },
+      {
+        "name": "ERROR_PERCENT",
+        "label": "Error at or above (%)",
+        "type": "integer",
+        "required": false,
+        "default": "95",
+        "help": "Used inodes that count as a failure."
+      },
+      {
+        "name": "EXCLUDE",
+        "label": "Excluded mount points",
+        "type": "text",
+        "required": false,
+        "help": "Mount points to skip. One per line or comma separated."
+      }
+    ]
+  },
+  {
+    "guid": "8d24c877-d241-4d41-87fe-b47ccbbbe70b",
+    "filename": "linux_monitoring_journal_errors.sh",
+    "name": "Journal errors report",
+    "description": "Shows error-level log entries of the last hours from journald, or from /var/log/messages or syslog without journald. Exit 2 when any exist, 3 without a log source.",
+    "shell": "shell",
+    "category": "Linux / Monitoring",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "HOURS",
+        "label": "Hours to look back",
+        "type": "integer",
+        "required": false,
+        "default": "24",
+        "help": "1 to 168."
+      },
+      {
+        "name": "MAX",
+        "label": "Entries to show",
+        "type": "integer",
+        "required": false,
+        "default": "30",
+        "help": "1 to 500."
+      }
+    ]
+  },
+  {
+    "guid": "a7ca390b-4d41-428d-8f91-180b4d91b58c",
+    "filename": "linux_monitoring_listening_ports.sh",
+    "name": "Listening port check",
+    "description": "Checks that every listed port has a listener, read from /proc/net so no extra tool is needed. Exit 1 when a port is closed.",
+    "shell": "shell",
+    "category": "Linux / Monitoring",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "PORTS",
+        "label": "Ports",
+        "type": "text",
+        "required": true,
+        "help": "1-65535, optionally tcp: or udp: prefixed (default tcp). One per line or comma separated."
+      }
+    ]
+  },
+  {
+    "guid": "d4fe6a9e-fac7-4be3-b59e-bf3ab7cc1304",
+    "filename": "linux_monitoring_load.sh",
+    "name": "Load check",
+    "description": "Compares the 5-minute load average divided by the CPU core count with the thresholds. Exit 2 at the warning level, 1 at the error level.",
+    "shell": "shell",
+    "category": "Linux / Monitoring",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "WARN_PER_CORE",
+        "label": "Warn per core",
+        "type": "decimal",
+        "required": false,
+        "default": "1.5",
+        "help": "5-minute load per core that counts as a warning."
+      },
+      {
+        "name": "ERROR_PER_CORE",
+        "label": "Error per core",
+        "type": "decimal",
+        "required": false,
+        "default": "3",
+        "help": "5-minute load per core that counts as a failure."
+      }
+    ]
+  },
+  {
+    "guid": "f3500ec7-96fa-4d8e-80fa-ce58532c60d5",
+    "filename": "linux_monitoring_memory.sh",
+    "name": "Memory check",
+    "description": "Compares used memory (total minus MemAvailable) with the thresholds and reports swap use. Exit 2 at the warning level, 1 at the error level.",
+    "shell": "shell",
+    "category": "Linux / Monitoring",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "WARN_PERCENT",
+        "label": "Warn at or above (%)",
+        "type": "integer",
+        "required": false,
+        "default": "85",
+        "help": "Used memory that counts as a warning."
+      },
+      {
+        "name": "ERROR_PERCENT",
+        "label": "Error at or above (%)",
+        "type": "integer",
+        "required": false,
+        "default": "95",
+        "help": "Used memory that counts as a failure."
+      }
+    ]
+  },
+  {
+    "guid": "cf7051fb-7419-44e0-a0d3-8ab643283140",
+    "filename": "linux_monitoring_oom_kills.sh",
+    "name": "Out-of-memory kills check",
+    "description": "Looks for kernel out-of-memory kills in the last hours (journald, else the kernel ring buffer since boot or kern.log). Exit 1 when any are found.",
+    "shell": "shell",
+    "category": "Linux / Monitoring",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "HOURS",
+        "label": "Hours to look back",
+        "type": "integer",
+        "required": false,
+        "default": "24",
+        "help": "1 to 720."
+      }
+    ]
+  },
+  {
+    "guid": "1b63084b-72fe-403b-b477-349f74c8c197",
+    "filename": "linux_monitoring_process_running.sh",
+    "name": "Process running check",
+    "description": "Checks that every listed process name is running, using the kernel process name (15 characters). Exit 1 when one is missing.",
+    "shell": "shell",
+    "category": "Linux / Monitoring",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "PROCESSES",
+        "label": "Processes",
+        "type": "text",
+        "required": true,
+        "help": "Process names such as nginx. One per line or comma separated."
+      }
+    ]
+  },
+  {
+    "guid": "9954cac6-752c-4474-ad3e-b6719accdcbc",
+    "filename": "linux_monitoring_reboot_required.sh",
+    "name": "Reboot required check",
+    "description": "Detects a pending reboot: Debian/Ubuntu flag file, needs-restarting on RHEL and Fedora, zypper needs-rebooting on openSUSE, otherwise running versus newest installed kernel. Exit 2 when a reboot is needed.",
+    "shell": "shell",
+    "category": "Linux / Monitoring",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "d93bd043-6f19-4d9b-8e1f-27c18e93c1da",
+    "filename": "linux_monitoring_services_running.sh",
+    "name": "Services running check",
+    "description": "Checks that every listed service is active (systemd) or started (OpenRC). Exit 1 when one is not running.",
+    "shell": "shell",
+    "category": "Linux / Monitoring",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "SERVICES",
+        "label": "Services",
+        "type": "text",
+        "required": true,
+        "help": "Service names such as sshd or cron. One per line or comma separated."
+      }
+    ]
+  },
+  {
+    "guid": "e10f4f96-094e-40d5-a5ed-eb94ae559392",
+    "filename": "linux_monitoring_time_sync.sh",
+    "name": "Time sync check",
+    "description": "Checks clock synchronisation with chrony, ntpd, systemd-timesyncd or busybox ntpd, whichever is present. Exit 1 when not synchronised, 3 when no tool exists.",
+    "shell": "shell",
+    "category": "Linux / Monitoring",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "b9c081e0-d5ca-4cec-96d9-8b2fbb2d3872",
+    "filename": "linux_monitoring_uptime.sh",
+    "name": "Uptime check",
+    "description": "Warns when the machine has been up longer than the limit, a hint for missed reboots after kernel updates. Exit 2 above the limit.",
+    "shell": "shell",
+    "category": "Linux / Monitoring",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "MAX_DAYS",
+        "label": "Maximum uptime (days)",
+        "type": "integer",
+        "required": false,
+        "default": "60",
+        "help": "Days of uptime that count as a warning."
+      }
+    ]
+  },
+  {
+    "guid": "215b028d-b175-428c-bd77-72b211ef3089",
+    "filename": "linux_monitoring_url_check.sh",
+    "name": "URL check",
+    "description": "Requests an http or https URL with curl or wget and compares the status code. Redirects are not followed with curl. Exit 1 on another status or no answer.",
+    "shell": "shell",
+    "category": "Linux / Monitoring",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "URL",
+        "label": "URL",
+        "type": "string",
+        "required": true,
+        "help": "http:// or https:// address."
+      },
+      {
+        "name": "EXPECT_STATUS",
+        "label": "Expected status",
+        "type": "integer",
+        "required": false,
+        "default": "200",
+        "help": "HTTP status code that counts as healthy."
+      },
+      {
+        "name": "TIMEOUT",
+        "label": "Timeout (s)",
+        "type": "integer",
+        "required": false,
+        "default": "10",
+        "help": "Seconds to wait, 1 to 300."
+      }
+    ]
+  },
+  {
+    "guid": "dbe4ce42-db2e-402a-9379-fd88e52cd548",
+    "filename": "linux_network_connectivity.sh",
+    "name": "Connectivity test",
+    "description": "Pings hosts, opens TCP connections to host:port targets and optionally resolves a name. Exit 1 when any test fails.",
+    "shell": "shell",
+    "category": "Linux / Network",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 180,
+    "variables": [
+      {
+        "name": "TARGETS",
+        "label": "Targets",
+        "type": "text",
+        "required": true,
+        "help": "host or host:port. One per line or comma separated."
+      },
+      {
+        "name": "DNS_NAME",
+        "label": "DNS name to resolve",
+        "type": "string",
+        "required": false,
+        "help": "Optional host name to look up."
+      }
+    ]
+  },
+  {
+    "guid": "bf306dc5-c156-4243-b3d3-2a0b92aaefb8",
+    "filename": "linux_network_dns_report.sh",
+    "name": "DNS report",
+    "description": "Shows resolver configuration (resolv.conf, systemd-resolved, nsswitch) and runs test lookups. Exit 1 when example.com cannot be resolved.",
+    "shell": "shell",
+    "category": "Linux / Network",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "f4ffa33d-7013-40b5-8807-9bce05fe024b",
+    "filename": "linux_network_interfaces_routes.sh",
+    "name": "Interfaces and routes report",
+    "description": "Lists interfaces with state, MTU, MAC and addresses plus IPv4 and IPv6 routes. Read only.",
+    "shell": "shell",
+    "category": "Linux / Network",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "9fdafbdb-2925-4851-8145-ca8d78e94a18",
+    "filename": "linux_power_restart_shutdown.sh",
+    "name": "Restart or shut down",
+    "description": "Schedules a restart or shutdown after a delay, or cancels a scheduled one. Logged-in users get the message.",
+    "shell": "shell",
+    "category": "Linux / Power",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "MODE",
+        "label": "Mode",
+        "type": "select",
+        "required": true,
+        "default": "restart",
+        "options": [
+          "restart",
+          "shutdown",
+          "cancel"
+        ]
+      },
+      {
+        "name": "DELAY_MINUTES",
+        "label": "Delay (minutes)",
+        "type": "integer",
+        "required": false,
+        "default": "1",
+        "help": "1 to 1440."
+      },
+      {
+        "name": "MESSAGE",
+        "label": "Message",
+        "type": "string",
+        "required": false,
+        "help": "Optional notice for logged-in users."
+      }
+    ]
+  },
+  {
+    "guid": "0a23fe2b-415d-482d-a097-1056238de7b7",
+    "filename": "linux_power_wake_on_lan.sh",
+    "name": "Wake-on-LAN",
+    "description": "Shows or enables magic packet wake on a wired interface and makes it persistent through NetworkManager or systemd-networkd; says so when it cannot be persistent (for example under netplan). Exit 3 without hardware support.",
+    "shell": "shell",
+    "category": "Linux / Power",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "ACTION",
+        "label": "Action",
+        "type": "select",
+        "required": true,
+        "default": "status",
+        "options": [
+          "status",
+          "enable"
+        ]
+      },
+      {
+        "name": "INTERFACE",
+        "label": "Interface",
+        "type": "string",
+        "required": false,
+        "help": "Optional, default is the first physical wired interface."
+      }
+    ]
+  },
+  {
+    "guid": "96f72a53-b7b7-4b5e-9d39-01be47cc1b39",
+    "filename": "linux_remote_ssh_server.sh",
+    "name": "SSH server",
+    "description": "Installs the OpenSSH server if missing, enables and starts it, and can open its port in ufw or firewalld.",
+    "shell": "shell",
+    "category": "Linux / Remote Access",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 300,
+    "variables": [
+      {
+        "name": "OPEN_FIREWALL",
+        "label": "Open firewall",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Allow the SSH port in ufw or firewalld."
+      }
+    ]
+  },
+  {
+    "guid": "44fa4969-9d07-493a-8e86-03ab17ab4dac",
+    "filename": "linux_security_fail2ban_status.sh",
+    "name": "fail2ban status report",
+    "description": "Reports whether fail2ban runs, its jails and the banned addresses. Exit 1 when installed but stopped, 3 when not installed.",
+    "shell": "shell",
+    "category": "Linux / Security",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "ebf2ef96-626b-4bce-8b7a-2617d4cb98db",
+    "filename": "linux_security_firewall_port.sh",
+    "name": "Firewall port",
+    "description": "Opens, blocks or removes a firewall rule for one TCP or UDP port with ufw or firewalld (the active one first); refuses to block any SSH port. Exit 3 with any other firewall.",
+    "shell": "shell",
+    "category": "Linux / Security",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "ACTION",
+        "label": "Action",
+        "type": "select",
+        "required": true,
+        "default": "allow",
+        "options": [
+          "allow",
+          "deny",
+          "remove"
+        ]
+      },
+      {
+        "name": "PORT",
+        "label": "Port",
+        "type": "integer",
+        "required": true,
+        "help": "1 to 65535."
+      },
+      {
+        "name": "PROTOCOL",
+        "label": "Protocol",
+        "type": "select",
+        "required": true,
+        "default": "tcp",
+        "options": [
+          "tcp",
+          "udp"
+        ]
+      }
+    ]
+  },
+  {
+    "guid": "416910ff-ce96-40f0-a21b-916174bde05a",
+    "filename": "linux_security_firewall_status.sh",
+    "name": "Firewall status check",
+    "description": "Reports which firewall is active (ufw, firewalld, nftables, iptables), its default policy and open ports. Exit 1 when nothing filters, 3 when no firewall tool is installed.",
+    "shell": "shell",
+    "category": "Linux / Security",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "7c5b9400-8cba-4217-b590-635f3d6dd465",
+    "filename": "linux_security_mandatory_access_control.sh",
+    "name": "Mandatory access control report",
+    "description": "Reports the SELinux and AppArmor state. Exit 2 when none of them is enforcing.",
+    "shell": "shell",
+    "category": "Linux / Security",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "b2f84fe0-39a4-40a4-bccd-941d633099db",
+    "filename": "linux_security_privileged_access_audit.sh",
+    "name": "Privileged access audit",
+    "description": "Lists uid 0 accounts, sudo and wheel members, NOPASSWD rules and accounts with an empty password. Exit 1 on an empty password or an extra uid 0 account.",
+    "shell": "shell",
+    "category": "Linux / Security",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "5e14e9da-2350-480b-8cc1-44abff95bc7c",
+    "filename": "linux_security_ssh_audit.sh",
+    "name": "SSH configuration audit",
+    "description": "Checks the effective sshd settings for weak options (root login, password login, empty passwords, weak ciphers and MACs). Exit 2 when weak settings are found.",
+    "shell": "shell",
+    "category": "Linux / Security",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "23dd9b86-52ca-44d5-a722-b0f9c3290cc2",
+    "filename": "linux_security_ssh_password_auth.sh",
+    "name": "SSH password authentication",
+    "description": "Shows, disables or enables SSH password login. Disabling is refused unless root or a sudo user has a usable authorized key; sshd -t runs first and the old config is restored on failure.",
+    "shell": "shell",
+    "category": "Linux / Security",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "STATE",
+        "label": "State",
+        "type": "select",
+        "required": true,
+        "default": "status",
+        "options": [
+          "status",
+          "disable",
+          "enable"
+        ]
+      }
+    ]
+  },
+  {
+    "guid": "afec60da-5140-4a84-940f-2be0f75525a1",
+    "filename": "linux_software_install_packages.sh",
+    "name": "Install packages",
+    "description": "Installs packages non-interactively with the detected package manager (apt, dnf, yum, zypper, pacman, apk) after refreshing metadata, or reports whether they are installed. Verifies the result.",
+    "shell": "shell",
+    "category": "Linux / Software",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 900,
+    "variables": [
+      {
+        "name": "PACKAGES",
+        "label": "Packages",
+        "type": "string",
+        "required": true,
+        "help": "Package names separated by spaces or commas."
+      },
+      {
+        "name": "ACTION",
+        "label": "Action",
+        "type": "select",
+        "required": true,
+        "default": "install",
+        "options": [
+          "install",
+          "status"
+        ]
+      }
+    ]
+  },
+  {
+    "guid": "d12d4b53-2252-461b-ae46-334b4095aea4",
+    "filename": "linux_software_qemu_guest_agent.sh",
+    "name": "QEMU guest agent",
+    "description": "Installs and starts the QEMU guest agent on a KVM/QEMU virtual machine. Exit 3 on physical hosts, containers and other hypervisors.",
+    "shell": "shell",
+    "category": "Linux / Software",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 300
+  },
+  {
+    "guid": "96a9e53e-a195-436c-bbfd-fd2a705dfa0c",
+    "filename": "linux_storage_btrfs_errors.sh",
+    "name": "Btrfs device errors check",
+    "description": "Reads the device error counters of every mounted btrfs filesystem. Exit 1 when any counter is not zero, 3 without btrfs.",
+    "shell": "shell",
+    "category": "Linux / Storage",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "377d1989-650c-4f30-968d-5cbb5ac73a37",
+    "filename": "linux_storage_largest_directories.sh",
+    "name": "Largest directories report",
+    "description": "Lists the largest first-level directories below a path without crossing into other filesystems. Read only, can take a while on large trees.",
+    "shell": "shell",
+    "category": "Linux / Storage",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 600,
+    "variables": [
+      {
+        "name": "PATH_TO_SCAN",
+        "label": "Path",
+        "type": "string",
+        "required": false,
+        "default": "/",
+        "help": "Absolute directory to scan."
+      },
+      {
+        "name": "TOP",
+        "label": "Entries to show",
+        "type": "integer",
+        "required": false,
+        "default": "15",
+        "help": "1 to 200."
+      }
+    ]
+  },
+  {
+    "guid": "1b32e7e4-99ac-4262-81b4-123d9dd0ea10",
+    "filename": "linux_storage_lvm_thin_pool.sh",
+    "name": "LVM thin pool usage check",
+    "description": "Checks data and metadata usage of LVM thin pools. Exit 2 at the warning level, 1 at the error level, 3 without LVM or thin pools.",
+    "shell": "shell",
+    "category": "Linux / Storage",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "WARN_PERCENT",
+        "label": "Warn at or above (%)",
+        "type": "integer",
+        "required": false,
+        "default": "80",
+        "help": "Pool usage that counts as a warning."
+      },
+      {
+        "name": "ERROR_PERCENT",
+        "label": "Error at or above (%)",
+        "type": "integer",
+        "required": false,
+        "default": "90",
+        "help": "Pool usage that counts as a failure."
+      }
+    ]
+  },
+  {
+    "guid": "7b5970f7-5b9d-4652-802e-82e1341de2ff",
+    "filename": "linux_storage_mounts.sh",
+    "name": "Mounts check",
+    "description": "Checks that mount points are mounted, writable (a test file is created and removed) unless marked :ro, and answer within 10 seconds, which catches hung network mounts. Exit 1 on any problem.",
+    "shell": "shell",
+    "category": "Linux / Storage",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "MOUNTS",
+        "label": "Mount points",
+        "type": "text",
+        "required": true,
+        "help": "Absolute paths, add :ro for read-only mounts. One per line or comma separated."
+      }
+    ]
+  },
+  {
+    "guid": "4f08b482-c896-4cfe-ac0d-c53b8f3efcdd",
+    "filename": "linux_storage_raid_status.sh",
+    "name": "Software RAID check",
+    "description": "Reads /proc/mdstat: exit 1 for a degraded array, 2 while a rebuild or check runs, 3 when no md arrays exist.",
+    "shell": "shell",
+    "category": "Linux / Storage",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "c01729cd-cada-4029-9c20-c9d704d76925",
+    "filename": "linux_storage_zfs_health.sh",
+    "name": "ZFS pool health check",
+    "description": "Checks that every imported ZFS pool is ONLINE and shows its fill level. Exit 1 for a degraded or faulted pool, 3 without ZFS.",
+    "shell": "shell",
+    "category": "Linux / Storage",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "6f2049b1-39fd-482b-a049-afd5be1d5232",
+    "filename": "linux_system_hostname.sh",
+    "name": "Host name",
+    "description": "Shows the host name, or sets it and updates /etc/hostname and /etc/hosts.",
+    "shell": "shell",
+    "category": "Linux / System",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "NEW_HOSTNAME",
+        "label": "New host name",
+        "type": "string",
+        "required": false,
+        "help": "Empty only reports the current name."
+      }
+    ]
+  },
+  {
+    "guid": "a8e9d1ca-3804-4039-b4ef-9bd9c3046023",
+    "filename": "linux_system_hosts_entry.sh",
+    "name": "Hosts file entry",
+    "description": "Adds or removes a managed /etc/hosts entry (marked with # ulrmm). Other lines are never changed.",
+    "shell": "shell",
+    "category": "Linux / System",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "ACTION",
+        "label": "Action",
+        "type": "select",
+        "required": true,
+        "default": "add",
+        "options": [
+          "add",
+          "remove"
+        ]
+      },
+      {
+        "name": "IP",
+        "label": "IP address",
+        "type": "ip",
+        "required": false,
+        "help": "Needed for add."
+      },
+      {
+        "name": "ENTRY_HOSTNAME",
+        "label": "Host name",
+        "type": "string",
+        "required": true,
+        "help": "Name to map."
+      }
+    ]
+  },
+  {
+    "guid": "78cd25e2-39f9-444e-8b6b-f5c02ec3d26c",
+    "filename": "linux_system_swap_file.sh",
+    "name": "Swap file",
+    "description": "Creates, activates and adds a swap file to /etc/fstab; unchanged when it exists with that size. Refuses file systems that cannot hold swap.",
+    "shell": "shell",
+    "category": "Linux / System",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 900,
+    "variables": [
+      {
+        "name": "SIZE_MB",
+        "label": "Size (MB)",
+        "type": "integer",
+        "required": true,
+        "help": "64 or more."
+      },
+      {
+        "name": "SWAP_PATH",
+        "label": "File path",
+        "type": "string",
+        "required": false,
+        "default": "/swapfile",
+        "help": "Absolute path of the swap file."
+      }
+    ]
+  },
+  {
+    "guid": "31e5ced2-a8f8-4d69-8fd6-cfa4ede6bc23",
+    "filename": "linux_system_time_sync.sh",
+    "name": "Time synchronisation",
+    "description": "Makes sure systemd-timesyncd or chrony runs and starts at boot; installs chrony only on request.",
+    "shell": "shell",
+    "category": "Linux / System",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 300,
+    "variables": [
+      {
+        "name": "INSTALL",
+        "label": "Install chrony",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Install chrony when no time service exists."
+      }
+    ]
+  },
+  {
+    "guid": "21eb8be5-2c1a-4578-a877-e8a3a23b68e1",
+    "filename": "linux_system_timezone.sh",
+    "name": "Time zone",
+    "description": "Shows the time zone, or sets it. Exit 3 when the zone is unknown or tzdata is missing.",
+    "shell": "shell",
+    "category": "Linux / System",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "TIMEZONE",
+        "label": "Time zone",
+        "type": "string",
+        "required": false,
+        "help": "For example Europe/Berlin. Empty only reports."
+      }
+    ]
+  },
+  {
+    "guid": "f25e3f14-f3c7-4bc2-96e1-299866b969e3",
+    "filename": "linux_updates_automatic_security.sh",
+    "name": "Automatic security updates",
+    "description": "Shows, enables or disables unattended security updates: unattended-upgrades on apt systems, dnf-automatic on dnf systems. Exit 3 on zypper, pacman and apk with the reason.",
+    "shell": "shell",
+    "category": "Linux / Updates",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 300,
+    "variables": [
+      {
+        "name": "STATE",
+        "label": "State",
+        "type": "select",
+        "required": true,
+        "default": "status",
+        "options": [
+          "status",
+          "enable",
+          "disable"
+        ]
+      }
+    ]
+  },
+  {
+    "guid": "95bbc1d2-1473-4eb0-bb42-f32b2c926a36",
+    "filename": "linux_updates_held_packages.sh",
+    "name": "Held packages report",
+    "description": "Lists packages held back from updates (apt-mark hold, dnf versionlock and exclude, zypper locks, pacman IgnorePkg, apk pins).",
+    "shell": "shell",
+    "category": "Linux / Updates",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "85fd4a76-6426-4168-9829-38bb9447a9b3",
+    "filename": "linux_users_add_ssh_key.sh",
+    "name": "Add SSH key",
+    "description": "Adds a public key to a user's authorized_keys after a format check, without duplicates; the file is written as that user, symlinks are refused.",
+    "shell": "shell",
+    "category": "Linux / Users",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "TARGET_USER",
+        "label": "User name",
+        "type": "string",
+        "required": true,
+        "help": "Lowercase letters, digits, - and _."
+      },
+      {
+        "name": "PUBLIC_KEY",
+        "label": "Public key",
+        "type": "string",
+        "required": true,
+        "help": "One key line (ssh-ed25519, ssh-rsa, ecdsa); options such as command= are refused."
+      }
+    ]
+  },
+  {
+    "guid": "0593e17d-5b92-49a6-ae8c-81caac03a64b",
+    "filename": "linux_users_create.sh",
+    "name": "Create user",
+    "description": "Creates a local user with optional password, sudo rights, SSH key and shell. An existing user is only completed. Passwords are passed to chpasswd on stdin.",
+    "shell": "shell",
+    "category": "Linux / Users",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "TARGET_USER",
+        "label": "User name",
+        "type": "string",
+        "required": true,
+        "help": "Lowercase letters, digits, - and _."
+      },
+      {
+        "name": "PASSWORD",
+        "label": "Password",
+        "type": "password",
+        "required": false,
+        "help": "Optional, 8 to 128 characters."
+      },
+      {
+        "name": "SUDO",
+        "label": "Sudo rights",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Adds the user to the sudo or wheel group."
+      },
+      {
+        "name": "SSH_PUBLIC_KEY",
+        "label": "SSH public key",
+        "type": "string",
+        "required": false,
+        "help": "Optional, one key line without options."
+      },
+      {
+        "name": "LOGIN_SHELL",
+        "label": "Shell",
+        "type": "string",
+        "required": false,
+        "help": "Optional, default /bin/bash or /bin/sh."
+      }
+    ]
+  },
+  {
+    "guid": "f7e3837a-bf6f-482d-bb76-3128e68d4280",
+    "filename": "linux_users_delete.sh",
+    "name": "Delete user",
+    "description": "Deletes a local user. Refuses root, system accounts, logged-in users and the last sudo member. The home directory is kept unless asked.",
+    "shell": "shell",
+    "category": "Linux / Users",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "TARGET_USER",
+        "label": "User name",
+        "type": "string",
+        "required": true,
+        "help": "Lowercase letters, digits, - and _."
+      },
+      {
+        "name": "REMOVE_HOME",
+        "label": "Remove home directory",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Deletes the user's files."
+      }
+    ]
+  },
+  {
+    "guid": "02cd1862-66ee-4c70-abbb-0f39bcd713d6",
+    "filename": "linux_users_lock_unlock.sh",
+    "name": "Lock or unlock user",
+    "description": "Locks the password and expires the account (so key logins stop), or reverses it. Refuses root and the last unlocked admin.",
+    "shell": "shell",
+    "category": "Linux / Users",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "TARGET_USER",
+        "label": "User name",
+        "type": "string",
+        "required": true,
+        "help": "Lowercase letters, digits, - and _."
+      },
+      {
+        "name": "STATE",
+        "label": "State",
+        "type": "select",
+        "required": true,
+        "default": "lock",
+        "options": [
+          "lock",
+          "unlock"
+        ]
+      }
+    ]
+  },
+  {
+    "guid": "533eab7e-5114-4697-a0ef-5a533f4c967a",
+    "filename": "linux_users_set_password.sh",
+    "name": "Set password",
+    "description": "Sets a local user's password through chpasswd on stdin and checks that the hash changed. Refuses system accounts (root is allowed).",
+    "shell": "shell",
+    "category": "Linux / Users",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "TARGET_USER",
+        "label": "User name",
+        "type": "string",
+        "required": true,
+        "help": "Lowercase letters, digits, - and _."
+      },
+      {
+        "name": "PASSWORD",
+        "label": "Password",
+        "type": "password",
+        "required": true,
+        "help": "8 to 128 characters."
+      }
+    ]
+  },
+  {
+    "guid": "598200f8-7c1d-4764-830e-66a2c6966029",
+    "filename": "linux_users_ssh_keys_audit.sh",
+    "name": "SSH keys audit",
+    "description": "Lists every authorized SSH key per account with size and fingerprint. Exit 2 when DSA or short RSA keys exist, 3 without ssh-keygen.",
+    "shell": "shell",
+    "category": "Linux / Users",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "fffc662e-477e-486f-9eb0-75041818119f",
+    "filename": "linux_users_list.sh",
+    "name": "Users list",
+    "description": "Lists login-capable accounts with groups, locked state, last login and number of SSH keys.",
+    "shell": "shell",
+    "category": "Linux / Users",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "0cc714bc-1521-4971-98ae-37b0559d1224",
+    "filename": "win_ad_recycle_bin.ps1",
+    "name": "AD recycle bin check",
+    "description": "Checks whether the Active Directory Recycle Bin is enabled in the forest. Exit 1 when not, 3 when not a domain controller.",
+    "shell": "powershell",
+    "category": "Windows / Active Directory",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "16864b99-c5fd-444a-bd8e-5a84a4a9b77b",
+    "filename": "win_ad_dc_replication.ps1",
+    "name": "Domain controller replication check",
+    "description": "Checks replication of this domain controller with its partners. Exit 1 on a failure, 3 when the computer is not a domain controller.",
+    "shell": "powershell",
+    "category": "Windows / Active Directory",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 180
+  },
+  {
+    "guid": "805120d6-74bc-44c6-8845-89628a2c7159",
+    "filename": "win_ad_entra_join_status.ps1",
+    "name": "Entra ID join status",
+    "description": "Reports Entra ID (Azure AD), hybrid and on-premises domain join state with tenant and device id from dsregcmd /status.",
+    "shell": "powershell",
+    "category": "Windows / Active Directory",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "7d3c2ee8-67ca-4678-97b4-8e2d6a1d26c8",
+    "filename": "win_ad_join_domain.ps1",
+    "name": "Join domain",
+    "description": "Joins the computer to an Active Directory domain, optionally into an OU, with an optional restart. The password is never printed. Exit 3 on domain controllers or when already in another domain.",
+    "shell": "powershell",
+    "category": "Windows / Active Directory",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 300,
+    "variables": [
+      {
+        "name": "DOMAIN",
+        "label": "Domain",
+        "type": "string",
+        "required": true,
+        "help": "DNS or NetBIOS name."
+      },
+      {
+        "name": "DOMAIN_USER",
+        "label": "Join account",
+        "type": "string",
+        "required": true,
+        "help": "For example DOMAIN\\admin."
+      },
+      {
+        "name": "PASSWORD",
+        "label": "Password",
+        "type": "password",
+        "required": true
+      },
+      {
+        "name": "OU",
+        "label": "OU path",
+        "type": "string",
+        "required": false,
+        "help": "Distinguished name, for example OU=Servers,DC=corp,DC=example,DC=com."
+      },
+      {
+        "name": "RESTART",
+        "label": "Restart after joining",
+        "type": "checkbox",
+        "required": false,
+        "default": "false"
+      }
+    ]
+  },
+  {
+    "guid": "6f35a319-d580-41a9-a514-ba121c7212dc",
+    "filename": "win_ad_secure_channel.ps1",
+    "name": "Secure channel check",
+    "description": "Tests the trust between this computer and its domain, and with REPAIR resets it using the given credentials. Exit 1 when broken, 3 when not domain joined.",
+    "shell": "powershell",
+    "category": "Windows / Active Directory",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "REPAIR",
+        "label": "Repair when broken",
+        "type": "checkbox",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "DOMAIN_USER",
+        "label": "Domain account",
+        "type": "string",
+        "required": false,
+        "help": "Needed for REPAIR."
+      },
+      {
+        "name": "PASSWORD",
+        "label": "Password",
+        "type": "password",
+        "required": false,
+        "help": "Needed for REPAIR."
+      }
+    ]
+  },
+  {
+    "guid": "5f5cd8b4-bf79-4c71-99f5-5940115c92c3",
+    "filename": "win_agent_log_tail.ps1",
+    "name": "Agent log tail",
+    "description": "Prints the last lines of the agent log in the agent install directory. Exit 1 when no log file exists, 3 when the agent is not installed.",
+    "shell": "powershell",
+    "category": "Windows / Agent",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "LINES",
+        "label": "Lines",
+        "type": "integer",
+        "required": false,
+        "default": "100",
+        "help": "1 to 2000."
+      }
+    ]
+  },
+  {
+    "guid": "340eefc2-5958-44e8-9801-ef664b25764b",
+    "filename": "win_agent_defender_exclusions.ps1",
+    "name": "Defender exclusions for the agent",
+    "description": "Adds Microsoft Defender exclusions for the agent and Mesh Agent directories, the working directory and the agent processes. Exit 3 without Defender cmdlets.",
+    "shell": "powershell",
+    "category": "Windows / Agent",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "5ff29cb3-1b91-48e1-9778-827317f23a6d",
+    "filename": "win_agent_mesh_status.ps1",
+    "name": "MeshCentral agent status",
+    "description": "Reports the Mesh Agent service state, path and version, and can restart it. Exit 1 when it is not running, 3 when not installed.",
+    "shell": "powershell",
+    "category": "Windows / Agent",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "RESTART",
+        "label": "Restart the service",
+        "type": "checkbox",
+        "required": false,
+        "default": "false"
+      }
+    ]
+  },
+  {
+    "guid": "6104265a-d7bc-4212-822b-2f0325f89691",
+    "filename": "win_antivirus_status.ps1",
+    "name": "Antivirus status",
+    "description": "Lists the antivirus products in Security Center with on/off and signature state. Exit 1 when none is active, 2 when outdated or several are active.",
+    "shell": "powershell",
+    "category": "Windows / Antivirus",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "682208b0-7b01-4400-9d82-1613f86230f4",
+    "filename": "win_antivirus_install.ps1",
+    "name": "Avast Free Antivirus - install",
+    "description": "Installs Avast Free Antivirus from Avast's offline installer (about 1 GB) with /silent. The switch is not vendor-documented for this product (only for Avast Business), so test on one machine first.",
+    "shell": "powershell",
+    "category": "Windows / Antivirus",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 5400,
+    "syntax": "Checks the Authenticode publisher before running. Refuses when another antivirus is active.",
+    "env": [
+      "PRODUCT=avast-free"
+    ],
+    "variables": [
+      {
+        "name": "INSTALLER_URL",
+        "label": "Installer URL",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "https URL of a pinned or account-bound installer. The publisher signature is checked the same way."
+      },
+      {
+        "name": "ALLOW_EXISTING",
+        "label": "Install next to another antivirus",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Only for migrations: two real-time scanners on one machine cause hangs."
+      },
+      {
+        "name": "TIMEOUT_MINUTES",
+        "label": "Installer timeout (minutes)",
+        "type": "integer",
+        "required": false,
+        "default": "40",
+        "help": "The installer is stopped after this time."
+      }
+    ]
+  },
+  {
+    "guid": "33956765-89ef-45eb-8e05-abb6cdaa84a8",
+    "filename": "win_antivirus_install.ps1",
+    "name": "AVG AntiVirus Free - install",
+    "description": "Installs AVG AntiVirus Free from AVG's offline installer (about 1.1 GB) with /silent. The switch is not vendor-documented for this product (only for AVG business products), so test on one machine first.",
+    "shell": "powershell",
+    "category": "Windows / Antivirus",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 5400,
+    "syntax": "Checks the Authenticode publisher before running. Refuses when another antivirus is active.",
+    "env": [
+      "PRODUCT=avg-free"
+    ],
+    "variables": [
+      {
+        "name": "INSTALLER_URL",
+        "label": "Installer URL",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "https URL of a pinned or account-bound installer. The publisher signature is checked the same way."
+      },
+      {
+        "name": "ALLOW_EXISTING",
+        "label": "Install next to another antivirus",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Only for migrations: two real-time scanners on one machine cause hangs."
+      },
+      {
+        "name": "TIMEOUT_MINUTES",
+        "label": "Installer timeout (minutes)",
+        "type": "integer",
+        "required": false,
+        "default": "40",
+        "help": "The installer is stopped after this time."
+      }
+    ]
+  },
+  {
+    "guid": "4a95e0fe-7d7b-4b10-8e3b-5e3121296f46",
+    "filename": "win_antivirus_install.ps1",
+    "name": "Bitdefender GravityZone - install",
+    "description": "Installs the GravityZone security agent through Bitdefender's MSI wrapper for the given installation package; license and policy come from the console.",
+    "shell": "powershell",
+    "category": "Windows / Antivirus",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 3600,
+    "syntax": "Checks the Authenticode publisher before running. Refuses when another antivirus is active.",
+    "env": [
+      "PRODUCT=bitdefender-gravityzone"
+    ],
+    "variables": [
+      {
+        "name": "GZ_PACKAGE_ID",
+        "label": "Installation package ID",
+        "type": "string",
+        "required": true,
+        "default": "",
+        "help": "The text in brackets of setupdownloader_[...].exe from the GravityZone console."
+      },
+      {
+        "name": "INSTALLER_URL",
+        "label": "Installer URL",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "https URL of a pinned or account-bound installer. The publisher signature is checked the same way."
+      },
+      {
+        "name": "ALLOW_EXISTING",
+        "label": "Install next to another antivirus",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Only for migrations: two real-time scanners on one machine cause hangs."
+      },
+      {
+        "name": "TIMEOUT_MINUTES",
+        "label": "Installer timeout (minutes)",
+        "type": "integer",
+        "required": false,
+        "default": "40",
+        "help": "The installer is stopped after this time."
+      }
+    ]
+  },
+  {
+    "guid": "88955c6b-4dee-40c8-87e6-923c41b14780",
+    "filename": "win_antivirus_install.ps1",
+    "name": "Bitdefender Total Security - start installer (attended)",
+    "description": "Starts Bitdefender's setup wizard on the screen of the signed-in user. A person completes it and activates the product by signing in to Bitdefender Central. The account needs administrator rights or an administrator's password for the elevation prompt.",
+    "shell": "powershell",
+    "category": "Windows / Antivirus",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 3600,
+    "syntax": "Run as the signed-in user. Checks the Authenticode publisher before starting and refuses when another antivirus is active. Exit 0 means the wizard was started, not that it finished; run again to confirm.",
+    "run_as_user": true,
+    "env": [
+      "PRODUCT=bitdefender-total-security",
+      "MODE=attended"
+    ],
+    "variables": [
+      {
+        "name": "INSTALLER_URL",
+        "label": "Installer URL",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "https URL of a pinned or account-bound installer. The publisher signature is checked the same way."
+      },
+      {
+        "name": "ALLOW_EXISTING",
+        "label": "Install next to another antivirus",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Only for migrations: two real-time scanners on one machine cause hangs."
+      }
+    ]
+  },
+  {
+    "guid": "2b60b56a-f1e9-4829-9c4d-f60ff37ad46b",
+    "filename": "win_antivirus_defender_scan.ps1",
+    "name": "Defender custom scan",
+    "description": "Scans one folder or file with Microsoft Defender and lists new detections. Exit 1 when something was detected.",
+    "shell": "powershell",
+    "category": "Windows / Antivirus",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 7200,
+    "env": [
+      "SCAN_TYPE=custom"
+    ],
+    "variables": [
+      {
+        "name": "SCAN_PATH",
+        "label": "Path to scan",
+        "type": "string",
+        "required": true,
+        "default": "",
+        "help": "Absolute local folder or file, for example C:\\Users."
+      }
+    ]
+  },
+  {
+    "guid": "7b5e6b63-8d7d-4f1a-b136-e3fc05966fb9",
+    "filename": "win_antivirus_defender_enable.ps1",
+    "name": "Defender enable protection and restore defaults",
+    "description": "Turns Defender real-time protection on and resets behavior, download and script scanning and cloud protection to defaults. Exclusions stay; policy settings are reported.",
+    "shell": "powershell",
+    "category": "Windows / Antivirus",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120
+  },
+  {
+    "guid": "4aba83a1-f669-42d1-89db-65ab7d453e2e",
+    "filename": "win_antivirus_defender_scan.ps1",
+    "name": "Defender full scan",
+    "description": "Runs a Microsoft Defender full scan and lists new detections. Exit 1 when something was detected.",
+    "shell": "powershell",
+    "category": "Windows / Antivirus",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 7200,
+    "env": [
+      "SCAN_TYPE=full"
+    ]
+  },
+  {
+    "guid": "df26e623-8edf-4802-b2f6-af2b824c810c",
+    "filename": "win_antivirus_defender_scan.ps1",
+    "name": "Defender quick scan",
+    "description": "Runs a Microsoft Defender quick scan and lists new detections. Exit 1 when something was detected.",
+    "shell": "powershell",
+    "category": "Windows / Antivirus",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 3600,
+    "env": [
+      "SCAN_TYPE=quick"
+    ]
+  },
+  {
+    "guid": "e3e077c8-30d2-4425-ad6b-36b63e6d3689",
+    "filename": "win_antivirus_defender_update.ps1",
+    "name": "Defender signature update",
+    "description": "Updates the Microsoft Defender signatures now and prints the old and new version.",
+    "shell": "powershell",
+    "category": "Windows / Antivirus",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 900
+  },
+  {
+    "guid": "35dfa3f5-75ca-429a-8a18-70893d33c0e0",
+    "filename": "win_antivirus_defender_status.ps1",
+    "name": "Defender status",
+    "description": "Checks Microsoft Defender engine, real-time protection and signature age. Passes when another antivirus is the active one.",
+    "shell": "powershell",
+    "category": "Windows / Antivirus",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "WARN_DAYS",
+        "label": "Warn at signature age (days)",
+        "type": "integer",
+        "required": false,
+        "default": "2",
+        "help": "Signature age that counts as a warning."
+      },
+      {
+        "name": "FAIL_DAYS",
+        "label": "Fail at signature age (days)",
+        "type": "integer",
+        "required": false,
+        "default": "7",
+        "help": "Signature age that fails the check."
+      }
+    ]
+  },
+  {
+    "guid": "3e8bfde6-49b1-401c-a150-fc725e338afd",
+    "filename": "win_antivirus_eset_scan.ps1",
+    "name": "ESET command-line scan",
+    "description": "Scans with ecls.exe of an installed ESET product and lists detections. Exit 1 on threats, 2 when files could not be scanned.",
+    "shell": "powershell",
+    "category": "Windows / Antivirus",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 7200,
+    "variables": [
+      {
+        "name": "SCAN_PATH",
+        "label": "Path to scan",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "Absolute local path. Empty scans all local drives."
+      }
+    ]
+  },
+  {
+    "guid": "967913c0-5db8-4cfd-a552-ce0d4f17f364",
+    "filename": "win_antivirus_install.ps1",
+    "name": "ESET Endpoint Antivirus - install",
+    "description": "Installs ESET Endpoint Antivirus from ESET's MSI with the documented msiexec properties and activates it with the license key if given.",
+    "shell": "powershell",
+    "category": "Windows / Antivirus",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 3600,
+    "syntax": "Checks the Authenticode publisher before running. Refuses when another antivirus is active.",
+    "env": [
+      "PRODUCT=eset-endpoint-antivirus"
+    ],
+    "variables": [
+      {
+        "name": "LICENSE_KEY",
+        "label": "License key",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "Activation key, passed to the installer and never printed."
+      },
+      {
+        "name": "INSTALLER_URL",
+        "label": "Installer URL",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "https URL of a pinned or account-bound installer. The publisher signature is checked the same way."
+      },
+      {
+        "name": "ALLOW_EXISTING",
+        "label": "Install next to another antivirus",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Only for migrations: two real-time scanners on one machine cause hangs."
+      },
+      {
+        "name": "TIMEOUT_MINUTES",
+        "label": "Installer timeout (minutes)",
+        "type": "integer",
+        "required": false,
+        "default": "40",
+        "help": "The installer is stopped after this time."
+      }
+    ]
+  },
+  {
+    "guid": "bb03b903-4cc9-4a3d-8f61-db1861921cba",
+    "filename": "win_antivirus_install.ps1",
+    "name": "ESET Endpoint Security - install",
+    "description": "Installs ESET Endpoint Security from ESET's MSI with the documented msiexec properties and activates it with the license key if given.",
+    "shell": "powershell",
+    "category": "Windows / Antivirus",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 3600,
+    "syntax": "Checks the Authenticode publisher before running. Refuses when another antivirus is active.",
+    "env": [
+      "PRODUCT=eset-endpoint-security"
+    ],
+    "variables": [
+      {
+        "name": "LICENSE_KEY",
+        "label": "License key",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "Activation key, passed to the installer and never printed."
+      },
+      {
+        "name": "INSTALLER_URL",
+        "label": "Installer URL",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "https URL of a pinned or account-bound installer. The publisher signature is checked the same way."
+      },
+      {
+        "name": "ALLOW_EXISTING",
+        "label": "Install next to another antivirus",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Only for migrations: two real-time scanners on one machine cause hangs."
+      },
+      {
+        "name": "TIMEOUT_MINUTES",
+        "label": "Installer timeout (minutes)",
+        "type": "integer",
+        "required": false,
+        "default": "40",
+        "help": "The installer is stopped after this time."
+      }
+    ]
+  },
+  {
+    "guid": "115784de-ed97-4cf5-8c4f-f9ad6e68a30c",
+    "filename": "win_antivirus_install.ps1",
+    "name": "ESET HOME Security and NOD32 - install",
+    "description": "Installs ESET HOME Security or NOD32 from ESET's offline installer. The silent switches are not vendor-documented, so test on one machine first; activation needs an ESET HOME account in the product.",
+    "shell": "powershell",
+    "category": "Windows / Antivirus",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 3600,
+    "syntax": "Checks the Authenticode publisher before running. Refuses when another antivirus is active.",
+    "env": [
+      "PRODUCT=eset-home"
+    ],
+    "variables": [
+      {
+        "name": "INSTALLER_URL",
+        "label": "Installer URL",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "https URL of a pinned or account-bound installer. The publisher signature is checked the same way."
+      },
+      {
+        "name": "ALLOW_EXISTING",
+        "label": "Install next to another antivirus",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Only for migrations: two real-time scanners on one machine cause hangs."
+      },
+      {
+        "name": "TIMEOUT_MINUTES",
+        "label": "Installer timeout (minutes)",
+        "type": "integer",
+        "required": false,
+        "default": "40",
+        "help": "The installer is stopped after this time."
+      }
+    ]
+  },
+  {
+    "guid": "5d75ea4f-e0da-401e-bb37-99d1d496d2ce",
+    "filename": "win_antivirus_install.ps1",
+    "name": "ESET HOME Security and NOD32 - start installer (attended)",
+    "description": "Starts ESET's setup wizard on the screen of the signed-in user. A person completes it and activates the product with the ESET HOME account. The account needs administrator rights or an administrator's password for the elevation prompt.",
+    "shell": "powershell",
+    "category": "Windows / Antivirus",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 3600,
+    "syntax": "Run as the signed-in user. Checks the Authenticode publisher before starting and refuses when another antivirus is active. Exit 0 means the wizard was started, not that it finished; run again to confirm.",
+    "run_as_user": true,
+    "env": [
+      "PRODUCT=eset-home",
+      "MODE=attended"
+    ],
+    "variables": [
+      {
+        "name": "INSTALLER_URL",
+        "label": "Installer URL",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "https URL of a pinned or account-bound installer. The publisher signature is checked the same way."
+      },
+      {
+        "name": "ALLOW_EXISTING",
+        "label": "Install next to another antivirus",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Only for migrations: two real-time scanners on one machine cause hangs."
+      }
+    ]
+  },
+  {
+    "guid": "b004795b-0dbd-470b-9745-f863de243f2f",
+    "filename": "win_antivirus_install.ps1",
+    "name": "Kaspersky Endpoint Security - install",
+    "description": "Installs Kaspersky Endpoint Security for Windows from your hosted distribution kit with the documented EULA and privacy properties.",
+    "shell": "powershell",
+    "category": "Windows / Antivirus",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 3600,
+    "syntax": "Checks the Authenticode publisher before running. Refuses when another antivirus is active.",
+    "env": [
+      "PRODUCT=kaspersky-endpoint"
+    ],
+    "variables": [
+      {
+        "name": "INSTALLER_URL",
+        "label": "Installer URL",
+        "type": "string",
+        "required": true,
+        "default": "",
+        "help": "https URL of the vendor distribution kit (.exe or .msi) you host. The publisher signature is checked."
+      },
+      {
+        "name": "ALLOW_EXISTING",
+        "label": "Install next to another antivirus",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Only for migrations: two real-time scanners on one machine cause hangs."
+      },
+      {
+        "name": "TIMEOUT_MINUTES",
+        "label": "Installer timeout (minutes)",
+        "type": "integer",
+        "required": false,
+        "default": "40",
+        "help": "The installer is stopped after this time."
+      }
+    ]
+  },
+  {
+    "guid": "c2c73e97-6e12-443f-bef0-4fdd7a442343",
+    "filename": "win_antivirus_install.ps1",
+    "name": "Kaspersky Standard / Plus / Premium - install",
+    "description": "Installs Kaspersky Standard, Plus or Premium (one installer for all three) from the full installer you host, with Kaspersky's documented silent-mode properties, and activates it with the code if given.",
+    "shell": "powershell",
+    "category": "Windows / Antivirus",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 3600,
+    "syntax": "Checks the Authenticode publisher before running. Refuses when another antivirus is active.",
+    "env": [
+      "PRODUCT=kaspersky-home"
+    ],
+    "variables": [
+      {
+        "name": "INSTALLER_URL",
+        "label": "Installer URL",
+        "type": "string",
+        "required": true,
+        "default": "",
+        "help": "https URL of the full Kaspersky installer you host; Kaspersky publishes no direct link. The publisher signature is checked."
+      },
+      {
+        "name": "BIRTH_DATE",
+        "label": "Birth date of the device user",
+        "type": "date",
+        "required": true,
+        "default": "",
+        "help": "Kaspersky requires it for a silent install and does not install for users under 16."
+      },
+      {
+        "name": "LICENSE_KEY",
+        "label": "Activation code",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "Kaspersky activation code, passed to the installer and never printed. Empty leaves activation to the user."
+      },
+      {
+        "name": "ALLOW_EXISTING",
+        "label": "Install next to another antivirus",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Only for migrations: two real-time scanners on one machine cause hangs."
+      },
+      {
+        "name": "TIMEOUT_MINUTES",
+        "label": "Installer timeout (minutes)",
+        "type": "integer",
+        "required": false,
+        "default": "40",
+        "help": "The installer is stopped after this time."
+      }
+    ]
+  },
+  {
+    "guid": "7f8ebbec-feea-47aa-bad0-c960d4f1d431",
+    "filename": "win_antivirus_install.ps1",
+    "name": "Malwarebytes - install",
+    "description": "Installs Malwarebytes for Windows; it starts as free or trial and is activated in the product. The silent switches are not vendor-documented, so test on one machine first.",
+    "shell": "powershell",
+    "category": "Windows / Antivirus",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 3600,
+    "syntax": "Checks the Authenticode publisher before running. Refuses when another antivirus is active.",
+    "env": [
+      "PRODUCT=malwarebytes"
+    ],
+    "variables": [
+      {
+        "name": "INSTALLER_URL",
+        "label": "Installer URL",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "https URL of a pinned or account-bound installer. The publisher signature is checked the same way."
+      },
+      {
+        "name": "ALLOW_EXISTING",
+        "label": "Install next to another antivirus",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Only for migrations: two real-time scanners on one machine cause hangs."
+      },
+      {
+        "name": "TIMEOUT_MINUTES",
+        "label": "Installer timeout (minutes)",
+        "type": "integer",
+        "required": false,
+        "default": "40",
+        "help": "The installer is stopped after this time."
+      }
+    ]
+  },
+  {
+    "guid": "28997631-ba84-4bc1-96d2-cd3efafca152",
+    "filename": "win_inventory_memory_modules.ps1",
+    "name": "Memory modules report",
+    "description": "Lists installed memory modules with slot, size, type, speed, manufacturer, part number and serial, plus the slot count.",
+    "shell": "powershell",
+    "category": "Windows / Inventory",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "12900257-d299-4146-97d5-1b09590464b9",
+    "filename": "win_inventory_monitors.ps1",
+    "name": "Monitors report",
+    "description": "Lists connected monitors with manufacturer, model, serial, manufacture date and size decoded from the display data.",
+    "shell": "powershell",
+    "category": "Windows / Inventory",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "a217729a-fc19-49d7-a6f7-9e3baa83df4e",
+    "filename": "win_inventory_oem_product_key.ps1",
+    "name": "OEM product key collector",
+    "description": "Prints the Windows key embedded in the firmware alone on the last line, or none when there is no OEM key. Exit 0 either way.",
+    "shell": "powershell",
+    "category": "Windows / Inventory",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "e4e898c1-d842-4c85-8a87-84fcd0d3ce8b",
+    "filename": "win_inventory_serial_number.ps1",
+    "name": "Serial number collector",
+    "description": "Prints the hardware serial number alone on the last line for an RMM custom field. Exit 1 when the firmware has no usable serial.",
+    "shell": "powershell",
+    "category": "Windows / Inventory",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "cb0e83a1-b705-45f3-88f2-34e672a05056",
+    "filename": "win_inventory_system_report.ps1",
+    "name": "System report",
+    "description": "Prints model, serial, BIOS, OS build, install date, uptime, CPU, RAM, disks and network adapters with their IP addresses.",
+    "shell": "powershell",
+    "category": "Windows / Inventory",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "95245f4f-3a5e-4a29-ac09-81dbff605cf0",
+    "filename": "win_maintenance_browser_cache_clear.ps1",
+    "name": "Browser cache clear",
+    "description": "Clears the cache folders of Chrome, Edge and Firefox in every user profile. A running browser is skipped unless Force is set, which closes it first.",
+    "shell": "powershell",
+    "category": "Windows / Maintenance",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 900,
+    "variables": [
+      {
+        "name": "BROWSER",
+        "label": "Browser",
+        "type": "select",
+        "required": false,
+        "default": "all",
+        "options": [
+          "all",
+          "chrome",
+          "edge",
+          "firefox"
+        ],
+        "help": "Which browser to clear."
+      },
+      {
+        "name": "FORCE",
+        "label": "Close running browser",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Close the browser if it is running, unsaved work in it is lost."
+      }
+    ]
+  },
+  {
+    "guid": "d95288a9-3f76-4c02-abb0-277713045478",
+    "filename": "win_maintenance_disk_cleanup.ps1",
+    "name": "Disk cleanup",
+    "description": "Removes Windows and user temp files older than a day and the update download cache, optionally empties recycle bins and runs component store cleanup. Reports freed space. Exit 1 if a step failed.",
+    "shell": "powershell",
+    "category": "Windows / Maintenance",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 1800,
+    "variables": [
+      {
+        "name": "DRY_RUN",
+        "label": "Dry run",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Only report what would be removed."
+      },
+      {
+        "name": "RECYCLE_BIN",
+        "label": "Empty recycle bins",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Also empty the recycle bin of every fixed drive."
+      },
+      {
+        "name": "COMPONENT_CLEANUP",
+        "label": "Component store cleanup",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Run DISM StartComponentCleanup (can take several minutes)."
+      }
+    ]
+  },
+  {
+    "guid": "11c11e60-5bd8-44c3-a135-e94431c4f1ed",
+    "filename": "win_maintenance_end_process.ps1",
+    "name": "End process",
+    "description": "Ends every process with the given name. Core Windows processes and the RMM agents are protected. Exit 0 also when nothing was running.",
+    "shell": "powershell",
+    "category": "Windows / Maintenance",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "NAME",
+        "label": "Process name",
+        "type": "string",
+        "required": true,
+        "help": "Name with or without .exe."
+      }
+    ]
+  },
+  {
+    "guid": "b075b7df-19f4-4e1d-9e48-0a743927cba2",
+    "filename": "win_maintenance_print_spooler_reset.ps1",
+    "name": "Print spooler reset",
+    "description": "Stops the print spooler, deletes all queued print jobs and starts the spooler again. Exit 3 where there is no spooler.",
+    "shell": "powershell",
+    "category": "Windows / Maintenance",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120
+  },
+  {
+    "guid": "3315ce6c-0140-492b-b14c-349d09005fbf",
+    "filename": "win_maintenance_restart_shutdown.ps1",
+    "name": "Restart or shut down",
+    "description": "Restarts or shuts down the computer after an optional delay with a message for users, or cancels a pending shutdown.",
+    "shell": "powershell",
+    "category": "Windows / Maintenance",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "MODE",
+        "label": "Mode",
+        "type": "select",
+        "required": false,
+        "default": "restart",
+        "options": [
+          "restart",
+          "shutdown",
+          "cancel"
+        ],
+        "help": "What to do."
+      },
+      {
+        "name": "DELAY_MINUTES",
+        "label": "Delay (minutes)",
+        "type": "integer",
+        "required": false,
+        "default": "0",
+        "help": "0 to 1440. Users see the countdown."
+      },
+      {
+        "name": "MESSAGE",
+        "label": "Message",
+        "type": "string",
+        "required": false,
+        "help": "Shown to logged-on users."
+      },
+      {
+        "name": "FORCE",
+        "label": "Force close applications",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Close applications without asking, unsaved work is lost. Windows always does so when the delay is above 0."
+      }
+    ]
+  },
+  {
+    "guid": "1a404920-832d-493a-8ce0-ec59844bc558",
+    "filename": "win_maintenance_service_control.ps1",
+    "name": "Service control",
+    "description": "Shows the state and start type of a service, or starts, stops (with dependents) or restarts it. Exit 1 if the service is not in the wanted state.",
+    "shell": "powershell",
+    "category": "Windows / Maintenance",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 180,
+    "variables": [
+      {
+        "name": "SERVICE",
+        "label": "Service",
+        "type": "string",
+        "required": true,
+        "help": "Service name or display name, no wildcards."
+      },
+      {
+        "name": "ACTION",
+        "label": "Action",
+        "type": "select",
+        "required": false,
+        "default": "status",
+        "options": [
+          "status",
+          "start",
+          "stop",
+          "restart"
+        ],
+        "help": "What to do."
+      }
+    ]
+  },
+  {
+    "guid": "96ead74f-f562-4caf-ba31-4cc561848c53",
+    "filename": "win_maintenance_system_file_repair.ps1",
+    "name": "System file repair",
+    "description": "Checks the component store with DISM and the system files with sfc; repair mode restores both. Exit 0 healthy or repaired, 1 corruption remains.",
+    "shell": "powershell",
+    "category": "Windows / Maintenance",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 3600,
+    "variables": [
+      {
+        "name": "MODE",
+        "label": "Mode",
+        "type": "select",
+        "required": false,
+        "default": "scan",
+        "options": [
+          "scan",
+          "repair"
+        ],
+        "help": "Scan only reports; repair runs DISM RestoreHealth and sfc /scannow."
+      }
+    ]
+  },
+  {
+    "guid": "53074eb8-793f-4553-befd-e3b6b1141e9a",
+    "filename": "win_monitoring_bluescreen_check.ps1",
+    "name": "Bluescreen check",
+    "description": "Looks for bugcheck events and new dump files in the last days. Exit 1 if a bluescreen was recorded.",
+    "shell": "powershell",
+    "category": "Windows / Monitoring",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "DAYS",
+        "label": "Look back (days)",
+        "type": "integer",
+        "required": false,
+        "default": "7",
+        "help": "How far back to look."
+      }
+    ]
+  },
+  {
+    "guid": "a9a4e25e-7fdd-4a55-8e71-68c9daddc635",
+    "filename": "win_monitoring_process_memory_check.ps1",
+    "name": "Process memory check",
+    "description": "Checks that all instances of a process together stay below a working set limit. Exit 1 above the limit, 0 when not running.",
+    "shell": "powershell",
+    "category": "Windows / Monitoring",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "PROCESS",
+        "label": "Process name",
+        "type": "string",
+        "required": true,
+        "help": "Name with or without .exe."
+      },
+      {
+        "name": "MAX_MB",
+        "label": "Maximum memory (MB)",
+        "type": "integer",
+        "required": true,
+        "help": "Limit for all instances together."
+      }
+    ]
+  },
+  {
+    "guid": "f79dc836-099d-4157-8891-86044f713c83",
+    "filename": "win_monitoring_recent_software_installs.ps1",
+    "name": "Software installed recently report",
+    "description": "Lists MSI installs, removals and changes of the last hours from the Application log. Programs with their own installer are not recorded there.",
+    "shell": "powershell",
+    "category": "Windows / Monitoring",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "HOURS",
+        "label": "Look back (hours)",
+        "type": "integer",
+        "required": false,
+        "default": "24",
+        "help": "How far back to look."
+      }
+    ]
+  },
+  {
+    "guid": "e09601b8-61e9-465d-b233-2c27c142a6d6",
+    "filename": "win_monitoring_temporary_profile_check.ps1",
+    "name": "Temporary profile check",
+    "description": "Detects users on a temporary profile (TEMP folders) and profile registrations ending in .bak. Exit 1 if found.",
+    "shell": "powershell",
+    "category": "Windows / Monitoring",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "9fb74e29-a97d-48cf-b4ad-e764b21425c3",
+    "filename": "win_monitoring_top_processes.ps1",
+    "name": "Top processes report",
+    "description": "Lists the top processes by CPU (measured over 3 seconds, share of the whole machine) or by memory.",
+    "shell": "powershell",
+    "category": "Windows / Monitoring",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "TOP",
+        "label": "Processes listed",
+        "type": "integer",
+        "required": false,
+        "default": "10",
+        "help": "Number of processes."
+      },
+      {
+        "name": "SORT",
+        "label": "Sort by",
+        "type": "select",
+        "required": false,
+        "default": "cpu",
+        "options": [
+          "cpu",
+          "memory"
+        ],
+        "help": "Ranking."
+      }
+    ]
+  },
+  {
+    "guid": "ccd8c6b0-d9bf-44a9-987b-96a4af0a7744",
+    "filename": "win_monitoring_unexpected_shutdown_check.ps1",
+    "name": "Unexpected shutdown check",
+    "description": "Looks for Kernel-Power event 41 and EventLog event 6008 in the last days. Exit 1 if an unexpected shutdown was recorded.",
+    "shell": "powershell",
+    "category": "Windows / Monitoring",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "DAYS",
+        "label": "Look back (days)",
+        "type": "integer",
+        "required": false,
+        "default": "7",
+        "help": "How far back to look."
+      }
+    ]
+  },
+  {
+    "guid": "e1ecb7af-794d-4406-a506-35b55606cc6f",
+    "filename": "win_network_connectivity_test.ps1",
+    "name": "Connectivity test",
+    "description": "Pings hosts, opens TCP connections to host:port targets and resolves a DNS name. Exit 1 if any test fails.",
+    "shell": "powershell",
+    "category": "Windows / Network",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 180,
+    "variables": [
+      {
+        "name": "TARGETS",
+        "label": "Targets",
+        "type": "text",
+        "required": false,
+        "help": "One per line: host to ping or host:port for a TCP test."
+      },
+      {
+        "name": "DNS_NAME",
+        "label": "DNS name",
+        "type": "string",
+        "required": false,
+        "help": "Name that has to resolve."
+      }
+    ]
+  },
+  {
+    "guid": "1ba17dbe-d967-4a1b-a500-4633c6bb50a1",
+    "filename": "win_network_dns_servers.ps1",
+    "name": "DNS servers",
+    "description": "Sets the DNS servers on an adapter (default: the adapters with a default gateway) or returns them to DHCP. Without a server list it only reports.",
+    "shell": "powershell",
+    "category": "Windows / Network",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "SERVERS",
+        "label": "DNS servers",
+        "type": "text",
+        "required": false,
+        "help": "IP addresses separated by comma, space or line."
+      },
+      {
+        "name": "INTERFACE",
+        "label": "Adapter name",
+        "type": "string",
+        "required": false,
+        "help": "Exact adapter name, empty = adapters with a default gateway."
+      },
+      {
+        "name": "RESET_TO_DHCP",
+        "label": "Reset to DHCP",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Use the servers from DHCP, SERVERS is ignored."
+      }
+    ]
+  },
+  {
+    "guid": "a6e5ede1-6542-4b65-b93e-1c74cd5b9b22",
+    "filename": "win_network_firewall_rule.ps1",
+    "name": "Firewall rule",
+    "description": "Adds or removes a Windows Firewall port rule by name. An identical rule counts as done, a rule with the same name and other settings is refused, built-in groups are never removed.",
+    "shell": "powershell",
+    "category": "Windows / Network",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "ACTION",
+        "label": "Action",
+        "type": "select",
+        "required": false,
+        "default": "add",
+        "options": [
+          "add",
+          "remove"
+        ],
+        "help": "What to do."
+      },
+      {
+        "name": "NAME",
+        "label": "Rule name",
+        "type": "string",
+        "required": true,
+        "help": "Display name of the rule."
+      },
+      {
+        "name": "PORT",
+        "label": "Port",
+        "type": "string",
+        "required": false,
+        "help": "Port, range like 8000-8010 or comma list. Needed for add."
+      },
+      {
+        "name": "PROTOCOL",
+        "label": "Protocol",
+        "type": "select",
+        "required": false,
+        "default": "TCP",
+        "options": [
+          "TCP",
+          "UDP"
+        ],
+        "help": "Protocol."
+      },
+      {
+        "name": "DIRECTION",
+        "label": "Direction",
+        "type": "select",
+        "required": false,
+        "default": "inbound",
+        "options": [
+          "inbound",
+          "outbound"
+        ],
+        "help": "Traffic direction."
+      },
+      {
+        "name": "RULE_ACTION",
+        "label": "Rule action",
+        "type": "select",
+        "required": false,
+        "default": "allow",
+        "options": [
+          "allow",
+          "block"
+        ],
+        "help": "Allow or block."
+      }
+    ]
+  },
+  {
+    "guid": "3c6aefff-95b3-44e0-8c74-20a53162f7c0",
+    "filename": "win_network_hosts_entry.ps1",
+    "name": "Hosts file entry",
+    "description": "Adds a host name to the hosts file (replacing an older mapping of the name) or removes it. Already correct entries are left alone.",
+    "shell": "powershell",
+    "category": "Windows / Network",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "ACTION",
+        "label": "Action",
+        "type": "select",
+        "required": false,
+        "default": "add",
+        "options": [
+          "add",
+          "remove"
+        ],
+        "help": "What to do."
+      },
+      {
+        "name": "IP",
+        "label": "IP address",
+        "type": "ip",
+        "required": false,
+        "help": "Needed for add."
+      },
+      {
+        "name": "ENTRY_HOSTNAME",
+        "label": "Host name",
+        "type": "string",
+        "required": true,
+        "help": "Name to add or remove."
+      }
+    ]
+  },
+  {
+    "guid": "29f2a468-9cff-443c-908b-d394322f8239",
+    "filename": "win_network_ip_configuration.ps1",
+    "name": "IP configuration report",
+    "description": "Lists every adapter with an address: status, MAC, IPv4 and IPv6 addresses, gateway, DNS servers and DHCP.",
+    "shell": "powershell",
+    "category": "Windows / Network",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "2e970846-4f41-4836-95c8-294acb834997",
+    "filename": "win_network_profile_private.ps1",
+    "name": "Network profile to private",
+    "description": "Changes connected networks of category Public to Private so file sharing and discovery rules for private networks apply. Domain networks are not touched.",
+    "shell": "powershell",
+    "category": "Windows / Network",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "INTERFACE",
+        "label": "Adapter name",
+        "type": "string",
+        "required": false,
+        "help": "Exact adapter name, empty = every connection."
+      }
+    ]
+  },
+  {
+    "guid": "a592eda4-971f-43e0-a68c-ef8617d76156",
+    "filename": "win_network_repair.ps1",
+    "name": "Network repair",
+    "description": "Flushes the DNS cache, renews DHCP leases, resets Winsock or resets the TCP/IP stack. The two resets need a restart to finish.",
+    "shell": "powershell",
+    "category": "Windows / Network",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "ACTION",
+        "label": "Action",
+        "type": "select",
+        "required": false,
+        "default": "flush dns",
+        "options": [
+          "flush dns",
+          "renew dhcp",
+          "reset winsock",
+          "reset tcpip"
+        ],
+        "help": "What to do."
+      }
+    ]
+  },
+  {
+    "guid": "e142d567-ab15-4f5e-8cf3-55989a77dcb6",
+    "filename": "win_network_wifi_profiles.ps1",
+    "name": "Wi-Fi profiles list",
+    "description": "Lists saved Wi-Fi profiles with name, authentication, encryption and connection mode. Passwords are never read or shown.",
+    "shell": "powershell",
+    "category": "Windows / Network",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "2e4817e3-6773-44eb-bf51-be134e5cdbff",
+    "filename": "win_power_fast_startup.ps1",
+    "name": "Fast startup",
+    "description": "Shows, enables or disables fast startup (hybrid boot). It only works while hibernation is enabled; a policy value is reported if it overrides the setting.",
+    "shell": "powershell",
+    "category": "Windows / Power",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "STATE",
+        "label": "State",
+        "type": "select",
+        "required": false,
+        "default": "status",
+        "options": [
+          "status",
+          "on",
+          "off"
+        ],
+        "help": "What to do."
+      }
+    ]
+  },
+  {
+    "guid": "b63767f6-d8c1-48ff-a4ea-1bf0b9d9ba53",
+    "filename": "win_power_hibernate.ps1",
+    "name": "Hibernate",
+    "description": "Shows, enables or disables hibernation. Turning it off removes hiberfil.sys and also disables fast startup.",
+    "shell": "powershell",
+    "category": "Windows / Power",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "STATE",
+        "label": "State",
+        "type": "select",
+        "required": false,
+        "default": "status",
+        "options": [
+          "status",
+          "on",
+          "off"
+        ],
+        "help": "What to do."
+      }
+    ]
+  },
+  {
+    "guid": "25e74873-e175-4978-b44d-17e2d65901b7",
+    "filename": "win_power_plan.ps1",
+    "name": "Power plan",
+    "description": "Shows the active power plan or activates Balanced, High performance, Power saver or Ultimate performance; a missing plan is recreated from its template.",
+    "shell": "powershell",
+    "category": "Windows / Power",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "PLAN",
+        "label": "Plan",
+        "type": "select",
+        "required": false,
+        "default": "status",
+        "options": [
+          "status",
+          "balanced",
+          "high performance",
+          "power saver",
+          "ultimate"
+        ],
+        "help": "Plan to activate."
+      }
+    ]
+  },
+  {
+    "guid": "9e83c379-efb4-434d-83df-a5a34777dd88",
+    "filename": "win_power_sleep_display_timeouts.ps1",
+    "name": "Sleep and display timeouts",
+    "description": "Sets sleep and display timeouts for AC and battery in the active power plan. Empty values stay unchanged, 0 means never.",
+    "shell": "powershell",
+    "category": "Windows / Power",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "AC_SLEEP_MINUTES",
+        "label": "Sleep on AC (min)",
+        "type": "integer",
+        "required": false,
+        "help": "Empty = unchanged, 0 = never."
+      },
+      {
+        "name": "DC_SLEEP_MINUTES",
+        "label": "Sleep on battery (min)",
+        "type": "integer",
+        "required": false,
+        "help": "Empty = unchanged, 0 = never."
+      },
+      {
+        "name": "AC_DISPLAY_MINUTES",
+        "label": "Display off on AC (min)",
+        "type": "integer",
+        "required": false,
+        "help": "Empty = unchanged, 0 = never."
+      },
+      {
+        "name": "DC_DISPLAY_MINUTES",
+        "label": "Display off on battery (min)",
+        "type": "integer",
+        "required": false,
+        "help": "Empty = unchanged, 0 = never."
+      }
+    ]
+  },
+  {
+    "guid": "fdb96aaf-85af-48d1-a0fe-f99869943eee",
+    "filename": "win_remote_openssh_server.ps1",
+    "name": "OpenSSH server",
+    "description": "Installs the OpenSSH server capability, sets sshd to automatic start and ensures the TCP 22 firewall rule. Needs Windows 10 1809 or Server 2019 and Windows Update access.",
+    "shell": "powershell",
+    "category": "Windows / Remote Access",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 900
+  },
+  {
+    "guid": "1847b5d2-9566-4aa3-bb0e-a84d19831391",
+    "filename": "win_remote_desktop.ps1",
+    "name": "Remote Desktop",
+    "description": "Shows, enables or disables Remote Desktop with its firewall rule group, and sets Network Level Authentication when enabling. Exit 1 when a group policy keeps it in the other state, 3 on Home editions.",
+    "shell": "powershell",
+    "category": "Windows / Remote Access",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "STATE",
+        "label": "Action",
+        "type": "select",
+        "required": false,
+        "default": "status",
+        "options": [
+          "status",
+          "enable",
+          "disable"
+        ]
+      },
+      {
+        "name": "NLA",
+        "label": "Require NLA",
+        "type": "checkbox",
+        "required": false,
+        "default": "true",
+        "help": "Applied when enabling."
+      }
+    ]
+  },
+  {
+    "guid": "b7e05dde-35d3-4cb2-bfed-0d643fdaab34",
+    "filename": "win_security_bitlocker_recovery_key.ps1",
+    "name": "BitLocker recovery key collector",
+    "description": "Prints the numerical recovery password of a drive alone on the last line, so an RMM custom field can store it for escrow. Exit 1 when no recovery password exists.",
+    "shell": "powershell",
+    "category": "Windows / Security",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "DRIVE",
+        "label": "Drive",
+        "type": "string",
+        "required": false,
+        "help": "Drive letter such as C:. Empty means the system drive."
+      }
+    ]
+  },
+  {
+    "guid": "3f0210da-2997-4949-ac4a-614100468495",
+    "filename": "win_security_bitlocker_status.ps1",
+    "name": "BitLocker status check",
+    "description": "Checks that BitLocker protection is on and the volume is fully encrypted. Exit 1 otherwise, 3 where BitLocker is unavailable (for example Home editions).",
+    "shell": "powershell",
+    "category": "Windows / Security",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "DRIVE",
+        "label": "Drive",
+        "type": "string",
+        "required": false,
+        "help": "Drive letter such as C:. Empty means the system drive."
+      }
+    ]
+  },
+  {
+    "guid": "115ff41a-ff1c-4fda-b8bb-a51ce0da3293",
+    "filename": "win_security_firewall_enable.ps1",
+    "name": "Enable firewall",
+    "description": "Turns the Windows Firewall on for all three profiles and reports which profiles were off. Exit 1 when a profile stays off.",
+    "shell": "powershell",
+    "category": "Windows / Security",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "155557bb-50c3-4748-9a4d-ac5d98f85eb9",
+    "filename": "win_security_failed_logons.ps1",
+    "name": "Failed logons report",
+    "description": "Groups failed logon events (4625) of the last hours by account and source address. Exit 2 when the count is above the threshold, 3 when the Security log cannot be read.",
+    "shell": "powershell",
+    "category": "Windows / Security",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "HOURS",
+        "label": "Hours to look back",
+        "type": "integer",
+        "required": false,
+        "default": "24",
+        "help": "1 to 720."
+      },
+      {
+        "name": "THRESHOLD",
+        "label": "Warn above",
+        "type": "integer",
+        "required": false,
+        "default": "20",
+        "help": "Number of failures that raises a warning."
+      }
+    ]
+  },
+  {
+    "guid": "7750004c-2f96-4bf4-9e7d-9f05b386632a",
+    "filename": "win_security_firewall_status.ps1",
+    "name": "Firewall status check",
+    "description": "Checks that the Windows Firewall is on for the domain, private and public profile. Exit 1 when a profile is off, 3 when the firewall cmdlets are missing.",
+    "shell": "powershell",
+    "category": "Windows / Security",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "ff0cd4f7-f8a7-4bce-b1ea-80f9ba6b6c27",
+    "filename": "win_security_local_admins.ps1",
+    "name": "Local administrators audit",
+    "description": "Lists the members of the built-in Administrators group (found by SID, any language). Exit 1 when a member is not in the ALLOWED list, if one is given.",
+    "shell": "powershell",
+    "category": "Windows / Security",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "ALLOWED",
+        "label": "Allowed accounts",
+        "type": "text",
+        "required": false,
+        "help": "Accounts that may be administrators, separated by comma or line break. Empty only lists."
+      }
+    ]
+  },
+  {
+    "guid": "d29aff3b-10df-4581-bd41-03c5ff2639ba",
+    "filename": "win_security_new_local_users.ps1",
+    "name": "New user accounts check",
+    "description": "Lists accounts created in the last hours (event 4720). Exit 2 when any account was created, 0 when none.",
+    "shell": "powershell",
+    "category": "Windows / Security",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "HOURS",
+        "label": "Hours to look back",
+        "type": "integer",
+        "required": false,
+        "default": "24",
+        "help": "1 to 8760."
+      }
+    ]
+  },
+  {
+    "guid": "cf596fdf-51b1-4bfd-ae32-505cdac2569b",
+    "filename": "win_security_pending_reboot.ps1",
+    "name": "Pending reboot check",
+    "description": "Checks the servicing stack, Windows Update, pending file renames and computer rename for a pending restart. Exit 2 when a restart is pending.",
+    "shell": "powershell",
+    "category": "Windows / Security",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "3d271b15-8eaf-4262-944d-278849d82c86",
+    "filename": "win_security_secureboot_tpm.ps1",
+    "name": "Secure Boot and TPM report",
+    "description": "Reports Secure Boot state, UEFI support and TPM presence and readiness. Exit 2 when Secure Boot is off or unsupported or the TPM is missing or inactive.",
+    "shell": "powershell",
+    "category": "Windows / Security",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "d03d1a1f-de03-4157-bae3-62433dd66682",
+    "filename": "win_security_smb1_check.ps1",
+    "name": "SMBv1 check",
+    "description": "Reports whether the SMBv1 server protocol is enabled; exit 1 when it is. With DISABLE it turns the protocol and the optional feature off (feature removal needs a restart).",
+    "shell": "powershell",
+    "category": "Windows / Security",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "DISABLE",
+        "label": "Disable SMBv1",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Turn SMBv1 off when it is on."
+      }
+    ]
+  },
+  {
+    "guid": "5a4cb343-57e3-487d-87e5-4ed7e0acef79",
+    "filename": "win_security_uac_status.ps1",
+    "name": "UAC status check",
+    "description": "Checks that User Account Control is enabled and prints the prompt behaviour and token filter settings. Exit 1 when UAC is disabled.",
+    "shell": "powershell",
+    "category": "Windows / Security",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "8757b9b3-d861-4c08-b374-d6bf33d1d976",
+    "filename": "win_security_usb_storage.ps1",
+    "name": "USB storage",
+    "description": "Shows, enables or disables USB mass storage through the USBSTOR driver start value. Devices already plugged in keep working until removed or restarted.",
+    "shell": "powershell",
+    "category": "Windows / Security",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "STATE",
+        "label": "Action",
+        "type": "select",
+        "required": false,
+        "default": "status",
+        "options": [
+          "status",
+          "enable",
+          "disable"
+        ]
+      }
+    ]
+  },
+  {
+    "guid": "25747bd8-aef0-4fc1-877a-9c8361e158e0",
+    "filename": "win_security_activation.ps1",
+    "name": "Windows activation check",
+    "description": "Checks that Windows is activated and prints the product, license channel and grace period. Exit 1 when it is not licensed.",
+    "shell": "powershell",
+    "category": "Windows / Security",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "afc525e6-6615-4ca8-b649-5086711afaec",
+    "filename": "win_server_certificate_expiry_check.ps1",
+    "name": "Certificate expiry check",
+    "description": "Checks the certificates of a store for expiry and names the IIS HTTPS bindings that use a listed certificate. Exit 1 expired, 2 expiring soon.",
+    "shell": "powershell",
+    "category": "Windows / Server Roles",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "WARN_DAYS",
+        "label": "Warn within (days)",
+        "type": "integer",
+        "required": false,
+        "default": "30",
+        "help": "Days before expiry that count as a warning."
+      },
+      {
+        "name": "STORE",
+        "label": "Store",
+        "type": "string",
+        "required": false,
+        "default": "LocalMachine\\My",
+        "help": "Certificate store, for example LocalMachine\\My."
+      }
+    ]
+  },
+  {
+    "guid": "4ff2d864-cbe5-4c89-a92f-28a8209b15f0",
+    "filename": "win_server_dhcp_scope_usage_check.ps1",
+    "name": "DHCP scope usage check",
+    "description": "Checks the address usage of every IPv4 DHCP scope. Exit 2 above the warning level, 1 when a scope is full, 3 without the DHCP role.",
+    "shell": "powershell",
+    "category": "Windows / Server Roles",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "WARN_PERCENT",
+        "label": "Warn above (%)",
+        "type": "integer",
+        "required": false,
+        "default": "85",
+        "help": "Scope usage that counts as a warning."
+      }
+    ]
+  },
+  {
+    "guid": "c902e08e-16f8-4675-a869-0faaac43865d",
+    "filename": "win_server_hyperv_old_checkpoints.ps1",
+    "name": "Hyper-V old checkpoints check",
+    "description": "Lists Hyper-V checkpoints older than the limit. Exit 2 if any exist, 3 without Hyper-V.",
+    "shell": "powershell",
+    "category": "Windows / Server Roles",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "MAX_DAYS",
+        "label": "Maximum age (days)",
+        "type": "integer",
+        "required": false,
+        "default": "7",
+        "help": "Older checkpoints are reported."
+      }
+    ]
+  },
+  {
+    "guid": "4d109d7b-ab41-4bbb-8cf0-8c30d98e14b8",
+    "filename": "win_server_hyperv_vm_status.ps1",
+    "name": "Hyper-V VM status check",
+    "description": "Lists Hyper-V VMs with state and heartbeat. Exit 1 if an expected VM is not running, 2 if a VM is critical or paused, 3 without Hyper-V.",
+    "shell": "powershell",
+    "category": "Windows / Server Roles",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "EXPECT_RUNNING",
+        "label": "VMs that must run",
+        "type": "text",
+        "required": false,
+        "help": "Names, comma or line separated."
+      }
+    ]
+  },
+  {
+    "guid": "aa88ee77-8c86-4d3a-8f35-5dd3f25fa266",
+    "filename": "win_server_backup_check.ps1",
+    "name": "Windows Server Backup check",
+    "description": "Checks the last Windows Server Backup run and the age of the last successful backup. Exit 1 if too old, never run or the last run failed, 3 if the feature is missing.",
+    "shell": "powershell",
+    "category": "Windows / Server Roles",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "MAX_HOURS",
+        "label": "Maximum age (hours)",
+        "type": "integer",
+        "required": false,
+        "default": "26",
+        "help": "Age of the last successful backup."
+      }
+    ]
+  },
+  {
+    "guid": "01f68d96-d52d-4aa7-addc-1ca5645545d1",
+    "filename": "win_software_find_installed.ps1",
+    "name": "Find installed software",
+    "description": "Lists installed programs (machine-wide, 64-bit and 32-bit entries) with version, publisher and install date, optionally filtered by name. Exit 1 if nothing matches.",
+    "shell": "powershell",
+    "category": "Windows / Software",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "NAME",
+        "label": "Name contains",
+        "type": "string",
+        "required": false,
+        "help": "Part of the display name, empty lists all."
+      }
+    ]
+  },
+  {
+    "guid": "fed60117-0f05-4769-abd4-574245085bed",
+    "filename": "win_software_uninstall.ps1",
+    "name": "Uninstall software",
+    "description": "Uninstalls a program by exact display name: MSI with msiexec /x /qn, others only with a QuietUninstallString. Refuses when several entries match.",
+    "shell": "powershell",
+    "category": "Windows / Software",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 1800,
+    "variables": [
+      {
+        "name": "NAME",
+        "label": "Display name",
+        "type": "string",
+        "required": true,
+        "help": "Exact name, see Find installed software."
+      },
+      {
+        "name": "DRY_RUN",
+        "label": "Dry run",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Only show the command that would run."
+      }
+    ]
+  },
+  {
+    "guid": "ed639531-c6c6-41a1-b32b-e7ad8a6709f3",
+    "filename": "win_software_winget.ps1",
+    "name": "Winget",
+    "description": "Runs winget as SYSTEM in machine scope: list available upgrades, upgrade all, or install, upgrade or uninstall one package by exact id. Exit 3 where winget is not installed (Server 2016/2019, LTSC).",
+    "shell": "powershell",
+    "category": "Windows / Software",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 1800,
+    "variables": [
+      {
+        "name": "ACTION",
+        "label": "Action",
+        "type": "select",
+        "required": false,
+        "default": "list",
+        "options": [
+          "list",
+          "upgrade all",
+          "install",
+          "upgrade",
+          "uninstall"
+        ],
+        "help": "list shows packages with an update."
+      },
+      {
+        "name": "PACKAGE_ID",
+        "label": "Package id",
+        "type": "string",
+        "required": false,
+        "help": "Exact id such as Mozilla.Firefox, for install, upgrade and uninstall."
+      }
+    ]
+  },
+  {
+    "guid": "ff7b924f-074b-4c7a-9540-4605789c0218",
+    "filename": "win_storage_disk_space_check.ps1",
+    "name": "Disk space check",
+    "description": "Checks the used space of fixed drives. Exit 2 above the warning level, 1 above the error level.",
+    "shell": "powershell",
+    "category": "Windows / Storage",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "WARN_PERCENT",
+        "label": "Warn above (%)",
+        "type": "integer",
+        "required": false,
+        "default": "85",
+        "help": "Used space that counts as a warning."
+      },
+      {
+        "name": "ERROR_PERCENT",
+        "label": "Error above (%)",
+        "type": "integer",
+        "required": false,
+        "default": "95",
+        "help": "Used space that counts as an error."
+      },
+      {
+        "name": "DRIVES",
+        "label": "Drives",
+        "type": "string",
+        "required": false,
+        "help": "Letters like C,D. Empty = all fixed drives."
+      }
+    ]
+  },
+  {
+    "guid": "da2d02a1-e805-487b-bd89-821f82e64547",
+    "filename": "win_storage_largest_files.ps1",
+    "name": "Largest files report",
+    "description": "Lists the largest files below a folder without following links. Large drives can take several minutes.",
+    "shell": "powershell",
+    "category": "Windows / Storage",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 1800,
+    "variables": [
+      {
+        "name": "SEARCH_PATH",
+        "label": "Folder",
+        "type": "string",
+        "required": false,
+        "help": "Local folder, default is the system drive."
+      },
+      {
+        "name": "TOP",
+        "label": "Files listed",
+        "type": "integer",
+        "required": false,
+        "default": "20",
+        "help": "Number of files."
+      },
+      {
+        "name": "MIN_MB",
+        "label": "Minimum size (MB)",
+        "type": "integer",
+        "required": false,
+        "default": "100",
+        "help": "Smaller files are ignored."
+      }
+    ]
+  },
+  {
+    "guid": "3217264e-02ad-4940-8849-1eec2e2ed26b",
+    "filename": "win_storage_optimize_volume.ps1",
+    "name": "Optimize volume",
+    "description": "Optimizes a volume by media type: retrim for SSDs and thin disks, defragmentation for hard disks.",
+    "shell": "powershell",
+    "category": "Windows / Storage",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 7200,
+    "variables": [
+      {
+        "name": "DRIVE",
+        "label": "Drive letter",
+        "type": "string",
+        "required": false,
+        "help": "Default is the system drive."
+      }
+    ]
+  },
+  {
+    "guid": "67c1a374-6139-43c6-b1fe-ad3415dcde55",
+    "filename": "win_storage_shadow_copies_report.ps1",
+    "name": "Shadow copies report",
+    "description": "Lists shadow copies per volume with count, oldest and newest copy, and the shadow storage use and limit.",
+    "shell": "powershell",
+    "category": "Windows / Storage",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120
+  },
+  {
+    "guid": "1c3bfd7f-c538-4a31-875a-b2b65b53459c",
+    "filename": "win_storage_pools_health.ps1",
+    "name": "Storage pools health check",
+    "description": "Checks Storage Spaces pools, virtual disks and pool disks. Exit 2 for a warning, 1 for an unhealthy object, 0 when healthy or no pools exist.",
+    "shell": "powershell",
+    "category": "Windows / Storage",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120
+  },
+  {
+    "guid": "a84e3e47-278c-40dd-96f5-5ec967089bf1",
+    "filename": "win_storage_volume_scan.ps1",
+    "name": "Volume scan",
+    "description": "Scans an NTFS volume for file system errors with Repair-Volume; spot fix repairs offline and may be scheduled for the next restart on the system drive. Exit 1 if errors remain.",
+    "shell": "powershell",
+    "category": "Windows / Storage",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 3600,
+    "variables": [
+      {
+        "name": "DRIVE",
+        "label": "Drive letter",
+        "type": "string",
+        "required": true,
+        "help": "For example C."
+      },
+      {
+        "name": "SPOT_FIX",
+        "label": "Spot fix",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Repair errors instead of only scanning."
+      }
+    ]
+  },
+  {
+    "guid": "915710c2-61d5-4060-8619-5e6741b30403",
+    "filename": "win_system_automatic_services_check.ps1",
+    "name": "Automatic services not running check",
+    "description": "Lists services set to start automatically that are stopped. Trigger-start services and delayed services shortly after boot are ignored. Exit 1 if any is found.",
+    "shell": "powershell",
+    "category": "Windows / System",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "EXCLUDE",
+        "label": "Exclude",
+        "type": "text",
+        "required": false,
+        "default": "edgeupdate,gupdate,MapsBroker",
+        "help": "Services to ignore, comma or line separated, name or display name, * allowed. The default lists updaters that stop on their own."
+      }
+    ]
+  },
+  {
+    "guid": "304e3d53-073d-4364-b221-9af72f71e1b2",
+    "filename": "win_system_event_log_errors.ps1",
+    "name": "Event log errors report",
+    "description": "Lists critical and error events of an event log from the last hours, grouped by provider and event id with count and last message.",
+    "shell": "powershell",
+    "category": "Windows / System",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 300,
+    "variables": [
+      {
+        "name": "LOG",
+        "label": "Log name",
+        "type": "string",
+        "required": false,
+        "default": "System",
+        "help": "Event log such as System or Application."
+      },
+      {
+        "name": "HOURS",
+        "label": "Look back (hours)",
+        "type": "integer",
+        "required": false,
+        "default": "24",
+        "help": "How far back to look."
+      },
+      {
+        "name": "MAX",
+        "label": "Groups shown",
+        "type": "integer",
+        "required": false,
+        "default": "20",
+        "help": "Number of provider/id groups to list."
+      }
+    ]
+  },
+  {
+    "guid": "63b367f5-5cc1-404c-9878-fbe669c7df2e",
+    "filename": "win_system_kms_activation.ps1",
+    "name": "KMS activation",
+    "description": "Points Windows, Windows Server and volume-licensed Office at your own KMS host and activates them. Can first replace the Windows key with the generic volume license key of the edition. Exit 1 when an activation fails.",
+    "shell": "powershell",
+    "category": "Windows / System",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 180,
+    "syntax": "Needs a KMS host you run yourself and matching volume licenses. Store the host once as global key KMS_HOST to reuse it.",
+    "variables": [
+      {
+        "name": "ACTION",
+        "label": "Action",
+        "type": "select",
+        "required": false,
+        "default": "activate",
+        "options": [
+          "activate",
+          "status",
+          "clear"
+        ],
+        "help": "status only reports the license state, clear removes the stored KMS host."
+      },
+      {
+        "name": "KMS_HOST",
+        "label": "KMS host",
+        "type": "string",
+        "required": false,
+        "default": "{{global.KMS_HOST}}",
+        "help": "Host name or IP, host:port is accepted. The default reads the global key KMS_HOST."
+      },
+      {
+        "name": "KMS_PORT",
+        "label": "KMS port",
+        "type": "integer",
+        "required": false,
+        "default": "1688",
+        "help": "TCP port of the KMS host."
+      },
+      {
+        "name": "PRODUCTS",
+        "label": "Products",
+        "type": "select",
+        "required": false,
+        "default": "all",
+        "options": [
+          "all",
+          "windows",
+          "office"
+        ],
+        "help": "Office means volume-licensed Office, Visio and Project."
+      },
+      {
+        "name": "INSTALL_GVLK",
+        "label": "Install volume license key",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Replaces a retail, OEM or MAK key of Windows with the KMS client key of this edition."
+      }
+    ]
+  },
+  {
+    "guid": "974fdffe-5a04-48f0-9f60-290cf4bff61c",
+    "filename": "win_system_long_paths_enable.ps1",
+    "name": "Long paths enable",
+    "description": "Sets LongPathsEnabled so applications that declare support can use paths over 260 characters. Needs Windows 10 1607 or Server 2016.",
+    "shell": "powershell",
+    "category": "Windows / System",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "f6c318a1-2562-46bb-ba21-e45b1528770d",
+    "filename": "win_system_optional_feature.ps1",
+    "name": "Optional feature",
+    "description": "Shows, enables or disables a Windows optional feature (client, DISM) or a server role or feature. Example: NetFx3 on Windows 10/11 or NET-Framework-Core on Server enables .NET 3.5.",
+    "shell": "powershell",
+    "category": "Windows / System",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 1800,
+    "syntax": "Client names: Get-WindowsOptionalFeature -Online. Server names: Get-WindowsFeature. .NET 3.5 may need Windows Update or install media.",
+    "variables": [
+      {
+        "name": "FEATURE",
+        "label": "Feature name",
+        "type": "string",
+        "required": true,
+        "help": "For example NetFx3 (client) or NET-Framework-Core (server)."
+      },
+      {
+        "name": "STATE",
+        "label": "State",
+        "type": "select",
+        "required": false,
+        "default": "status",
+        "options": [
+          "status",
+          "enable",
+          "disable"
+        ],
+        "help": "What to do."
+      }
+    ]
+  },
+  {
+    "guid": "1d667371-efec-4ace-bb44-aafda8f9a3e6",
+    "filename": "win_system_rename_computer.ps1",
+    "name": "Rename computer",
+    "description": "Renames the computer; the new name is active after a restart. Domain members need domain credentials that may rename the computer object.",
+    "shell": "powershell",
+    "category": "Windows / System",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "NEW_NAME",
+        "label": "New name",
+        "type": "string",
+        "required": true,
+        "help": "1-15 letters, digits or dashes."
+      },
+      {
+        "name": "RESTART",
+        "label": "Restart in 30 seconds",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Restart after the rename."
+      },
+      {
+        "name": "DOMAIN_USERNAME",
+        "label": "Domain user",
+        "type": "string",
+        "required": false,
+        "help": "Only for domain members, like DOMAIN\\user."
+      },
+      {
+        "name": "DOMAIN_PASSWORD",
+        "label": "Domain password",
+        "type": "password",
+        "required": false,
+        "help": "Only for domain members. Stored in the task history, use a dedicated account."
+      }
+    ]
+  },
+  {
+    "guid": "2dfab75c-8d62-49b4-8faf-cef80f49d95b",
+    "filename": "win_system_time_sync_check.ps1",
+    "name": "Time sync check",
+    "description": "Measures the clock offset against the configured time source over SNTP and can resync with w32tm. Exit 1 offset too large, 2 offset could not be measured.",
+    "shell": "powershell",
+    "category": "Windows / System",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "MAX_OFFSET_SECONDS",
+        "label": "Maximum offset (s)",
+        "type": "integer",
+        "required": false,
+        "default": "60",
+        "help": "Allowed difference to the time source."
+      },
+      {
+        "name": "RESYNC",
+        "label": "Resync when too large",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Run w32tm /resync when the offset is above the limit."
+      }
+    ]
+  },
+  {
+    "guid": "266671d4-1907-474f-b07f-c26f3d5e7ad9",
+    "filename": "win_system_time_zone.ps1",
+    "name": "Time zone",
+    "description": "Shows the time zone, or sets it by Windows time zone id such as W. Europe Standard Time. Exit 3 for an unknown id.",
+    "shell": "powershell",
+    "category": "Windows / System",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "TIMEZONE",
+        "label": "Time zone id",
+        "type": "string",
+        "required": false,
+        "help": "Leave empty to only report."
+      }
+    ]
+  },
+  {
+    "guid": "621dec64-925f-47fe-baa8-1f7927156240",
+    "filename": "win_system_uptime_check.ps1",
+    "name": "Uptime check",
+    "description": "Reports the time since the last boot. Exit 2 when it is longer than the limit (a hint that updates wait for a restart).",
+    "shell": "powershell",
+    "category": "Windows / System",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "MAX_DAYS",
+        "label": "Maximum uptime (days)",
+        "type": "integer",
+        "required": false,
+        "default": "30",
+        "help": "Warn above this."
+      }
+    ]
+  },
+  {
+    "guid": "cbe7bb5e-ef64-40a4-8889-a829e0e82e0f",
+    "filename": "win_updates_feature_update_target.ps1",
+    "name": "Feature update target",
+    "description": "Shows, sets or clears the TargetReleaseVersion policy that keeps a Windows 10 or 11 PC on a chosen feature update version. Client Windows only.",
+    "shell": "powershell",
+    "category": "Windows / Updates",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "ACTION",
+        "label": "Action",
+        "type": "select",
+        "required": false,
+        "default": "status",
+        "options": [
+          "status",
+          "set",
+          "clear"
+        ],
+        "help": "What to do."
+      },
+      {
+        "name": "PRODUCT",
+        "label": "Product",
+        "type": "select",
+        "required": false,
+        "default": "Windows 11",
+        "options": [
+          "Windows 10",
+          "Windows 11"
+        ],
+        "help": "Windows product the version belongs to."
+      },
+      {
+        "name": "VERSION",
+        "label": "Version",
+        "type": "string",
+        "required": false,
+        "help": "Release such as 24H2 or 22H2, needed for set."
+      }
+    ]
+  },
+  {
+    "guid": "7ce5d4ae-fa19-4450-bbe3-216e0ac49c97",
+    "filename": "win_updates_microsoft365_update.ps1",
+    "name": "Microsoft 365 Apps update",
+    "description": "Starts an update of Click-to-Run Microsoft 365 Apps with OfficeC2RClient.exe; it continues in the background. Exit 3 if Office is not installed that way.",
+    "shell": "powershell",
+    "category": "Windows / Updates",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 300,
+    "variables": [
+      {
+        "name": "FORCE_CLOSE",
+        "label": "Close Office apps",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Close open Office apps so the update does not wait for the user."
+      }
+    ]
+  },
+  {
+    "guid": "270cd751-47c4-4aeb-9908-8a975b8cda11",
+    "filename": "win_updates_restore_automatic_updates.ps1",
+    "name": "Restore automatic Windows updates",
+    "description": "Removes the AUOptions policy value the RMM agent writes when it takes over patching, so Windows manages updates itself again. Other update policies are left alone.",
+    "shell": "powershell",
+    "category": "Windows / Updates",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "2f50c527-5f08-4a05-888e-295f0e03b0e9",
+    "filename": "win_updates_windows11_readiness.ps1",
+    "name": "Windows 11 readiness check",
+    "description": "Checks 64-bit CPU, cores, clock, RAM, system disk size, UEFI, Secure Boot capability and TPM 2.0. The CPU model is not checked against Microsoft's list. Exit 1 if a check fails, 3 on Windows Server.",
+    "shell": "powershell",
+    "category": "Windows / Updates",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120
+  },
+  {
+    "guid": "227711a3-4415-4306-a31a-90301e987d43",
+    "filename": "win_updates_components_reset.ps1",
+    "name": "Windows Update components reset",
+    "description": "Stops the update services, renames SoftwareDistribution and catroot2 to .bak, clears the BITS queue and restarts the services. Use when Windows Update is stuck.",
+    "shell": "powershell",
+    "category": "Windows / Updates",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 600
+  },
+  {
+    "guid": "3c16ae9c-1e0f-4805-b51c-86c9cc7479e6",
+    "filename": "win_users_local_create.ps1",
+    "name": "Create local user",
+    "description": "Creates a local user and adds it to Users, optionally also to Administrators. The password is never printed. Exit 1 when the account exists or the password policy rejects it.",
+    "shell": "powershell",
+    "category": "Windows / Users",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "TARGET_USER",
+        "label": "User name",
+        "type": "string",
+        "required": true,
+        "help": "Up to 20 characters."
+      },
+      {
+        "name": "PASSWORD",
+        "label": "Password",
+        "type": "password",
+        "required": true,
+        "help": "Must satisfy the local password policy."
+      },
+      {
+        "name": "FULL_NAME",
+        "label": "Full name",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "ADMINISTRATOR",
+        "label": "Add to Administrators",
+        "type": "checkbox",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "PASSWORD_NEVER_EXPIRES",
+        "label": "Password never expires",
+        "type": "checkbox",
+        "required": false,
+        "default": "false"
+      }
+    ]
+  },
+  {
+    "guid": "b9d2ed0c-9196-478c-ba36-25e7a6b959cc",
+    "filename": "win_users_local_state.ps1",
+    "name": "Enable or disable local user",
+    "description": "Enables or disables a local account. Reports when it is already in the wanted state.",
+    "shell": "powershell",
+    "category": "Windows / Users",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "TARGET_USER",
+        "label": "User name",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "STATE",
+        "label": "Action",
+        "type": "select",
+        "required": true,
+        "default": "disable",
+        "options": [
+          "enable",
+          "disable"
+        ]
+      }
+    ]
+  },
+  {
+    "guid": "098fc24a-d8bc-4128-8de1-535f4c0b65e3",
+    "filename": "win_users_local_list.ps1",
+    "name": "Local users list",
+    "description": "Lists local accounts with enabled state, last logon, password expiry and whether they are administrators. Exit 3 on domain controllers.",
+    "shell": "powershell",
+    "category": "Windows / Users",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "01997fea-e772-4f3d-a412-546a219942f7",
+    "filename": "win_users_logoff_session.ps1",
+    "name": "Log off session",
+    "description": "Logs off all sessions of one user, or of every user with ALL. Unsaved work in those sessions is lost.",
+    "shell": "powershell",
+    "category": "Windows / Users",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "TARGET_USER",
+        "label": "User name or ALL",
+        "type": "string",
+        "required": true,
+        "help": "Account name, DOMAIN\\name, or ALL."
+      }
+    ]
+  },
+  {
+    "guid": "4960aa89-afc8-4fba-bb06-4132b6fc98cd",
+    "filename": "win_users_message.ps1",
+    "name": "Message to logged-on users",
+    "description": "Shows a message box to every logged-on session with msg.exe. Exit 3 where msg.exe is missing (Home editions), 1 when it reports an error such as no session.",
+    "shell": "powershell",
+    "category": "Windows / Users",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "MESSAGE",
+        "label": "Message",
+        "type": "text",
+        "required": true,
+        "help": "Up to 500 characters. Double quotes become single quotes."
+      },
+      {
+        "name": "DISPLAY_SECONDS",
+        "label": "Show for (seconds)",
+        "type": "integer",
+        "required": false,
+        "default": "60",
+        "help": "5 to 3600."
+      }
+    ]
+  },
+  {
+    "guid": "dc390364-526d-4903-b8cd-354e691bc696",
+    "filename": "win_users_local_reset_password.ps1",
+    "name": "Reset local password",
+    "description": "Sets a new password on a local account and can force a change at next logon. The password is never printed.",
+    "shell": "powershell",
+    "category": "Windows / Users",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "TARGET_USER",
+        "label": "User name",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "PASSWORD",
+        "label": "New password",
+        "type": "password",
+        "required": true,
+        "help": "Must satisfy the local password policy."
+      },
+      {
+        "name": "MUST_CHANGE",
+        "label": "Must change at next logon",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Does not work when the password never expires."
+      }
+    ]
+  },
+  {
+    "guid": "3bb4abbd-ad0a-4ccb-aa90-d162e36312a3",
+    "filename": "win_users_sessions_list.ps1",
+    "name": "Sessions list",
+    "description": "Lists logon sessions (console, remote, disconnected) with user, state, idle time and logon time using the terminal services API.",
+    "shell": "powershell",
+    "category": "Windows / Users",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "c44922b8-d640-40f9-a2a3-887dae8615d5",
+    "filename": "win_users_profiles_report.ps1",
+    "name": "User profiles report",
+    "description": "Lists user profiles with path, last use and loaded state, optionally the size on disk. Deletes nothing.",
+    "shell": "powershell",
+    "category": "Windows / Users",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 600,
+    "variables": [
+      {
+        "name": "SIZES",
+        "label": "Include folder sizes",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Walks every profile, slow on large ones."
+      }
+    ]
+  },
+  {
+    "guid": "23040615-58f8-4afd-95ba-46eb0687112a",
+    "filename": "mac_agent_log.sh",
+    "name": "Agent log tail",
+    "description": "Prints the last lines of /var/log/ulrmm-agent.log.",
+    "shell": "shell",
+    "category": "macOS / Agent",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "LINES",
+        "label": "Lines",
+        "type": "integer",
+        "required": false,
+        "default": "100",
+        "help": "1 to 2000."
+      }
+    ]
+  },
+  {
+    "guid": "3b77bbe1-1c21-4fe6-8334-198a268e53ba",
+    "filename": "mac_agent_services.sh",
+    "name": "Agent services status",
+    "description": "State of the agent launch daemon, its self-healing job and the MeshCentral agent, with the file paths. Exit 1 when the agent is not running, 2 when the other two are not up.",
+    "shell": "shell",
+    "category": "macOS / Agent",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "f40d5e81-6865-4b50-a517-efdb69587931",
+    "filename": "mac_antivirus_install.sh",
+    "name": "Avast Security - install",
+    "description": "Installs Avast Security from Avast's online disk image after the Team ID check. System extension and Full Disk Access need the user or MDM.",
+    "shell": "shell",
+    "category": "macOS / Antivirus",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 3600,
+    "syntax": "Checks pkgutil signature, Team ID and Gatekeeper before installer runs.",
+    "env": [
+      "PRODUCT=avast"
+    ],
+    "variables": [
+      {
+        "name": "INSTALLER_URL",
+        "label": "Installer URL",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "https URL of a .pkg or .dmg to use instead of the vendor default. The Team ID is checked the same way."
+      },
+      {
+        "name": "ALLOW_EXISTING",
+        "label": "Install next to another antivirus",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Only for migrations: two real-time scanners on one machine cause hangs."
+      }
+    ]
+  },
+  {
+    "guid": "537e90e2-08a6-4e8f-8cbe-c1e3acdca2a4",
+    "filename": "mac_antivirus_install.sh",
+    "name": "AVG AntiVirus - install",
+    "description": "Installs AVG AntiVirus for Mac from AVG's online disk image after the Team ID check. System extension and Full Disk Access need the user or MDM.",
+    "shell": "shell",
+    "category": "macOS / Antivirus",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 3600,
+    "syntax": "Checks pkgutil signature, Team ID and Gatekeeper before installer runs.",
+    "env": [
+      "PRODUCT=avg"
+    ],
+    "variables": [
+      {
+        "name": "INSTALLER_URL",
+        "label": "Installer URL",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "https URL of a .pkg or .dmg to use instead of the vendor default. The Team ID is checked the same way."
+      },
+      {
+        "name": "ALLOW_EXISTING",
+        "label": "Install next to another antivirus",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Only for migrations: two real-time scanners on one machine cause hangs."
+      }
+    ]
+  },
+  {
+    "guid": "615f6c11-6b90-421e-b550-81b6aad1a089",
+    "filename": "mac_antivirus_status.sh",
+    "name": "Built-in protection status",
+    "description": "Checks Gatekeeper, System Integrity Protection and the XProtect age and lists active antivirus system extensions.",
+    "shell": "shell",
+    "category": "macOS / Antivirus",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "WARN_DAYS",
+        "label": "Warn at XProtect age (days)",
+        "type": "integer",
+        "required": false,
+        "default": "45",
+        "help": "XProtect data older than this is a warning."
+      }
+    ]
+  },
+  {
+    "guid": "1d0c2a78-df8d-47c1-b82d-c611613485d7",
+    "filename": "mac_antivirus_install.sh",
+    "name": "ClamAV - install",
+    "description": "Installs the latest ClamAV package from the Cisco Talos GitHub release after the Team ID check. On-demand scanner only.",
+    "shell": "shell",
+    "category": "macOS / Antivirus",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 3600,
+    "syntax": "Checks pkgutil signature, Team ID and Gatekeeper before installer runs.",
+    "env": [
+      "PRODUCT=clamav"
+    ],
+    "variables": [
+      {
+        "name": "INSTALLER_URL",
+        "label": "Installer URL",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "https URL of a .pkg or .dmg to use instead of the vendor default. The Team ID is checked the same way."
+      }
+    ]
+  },
+  {
+    "guid": "5da33d1a-5bf8-4e81-900f-62842e3f151f",
+    "filename": "mac_antivirus_install.sh",
+    "name": "ESET Endpoint Security - install",
+    "description": "Installs ESET Endpoint Security for macOS after the Team ID check. License, system extensions and Full Disk Access need ESET PROTECT, MDM or the user.",
+    "shell": "shell",
+    "category": "macOS / Antivirus",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 3600,
+    "syntax": "Checks pkgutil signature, Team ID and Gatekeeper before installer runs.",
+    "env": [
+      "PRODUCT=eset-endpoint"
+    ],
+    "variables": [
+      {
+        "name": "INSTALLER_URL",
+        "label": "Installer URL",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "https URL of a .pkg or .dmg to use instead of the vendor default. The Team ID is checked the same way."
+      },
+      {
+        "name": "ALLOW_EXISTING",
+        "label": "Install next to another antivirus",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Only for migrations: two real-time scanners on one machine cause hangs."
+      }
+    ]
+  },
+  {
+    "guid": "871a5c13-56a5-490e-bf79-d5fbae83310e",
+    "filename": "mac_antivirus_install.sh",
+    "name": "Malwarebytes - install",
+    "description": "Installs Malwarebytes for Mac after the Team ID check. Activation, Full Disk Access and the extension need the user or MDM.",
+    "shell": "shell",
+    "category": "macOS / Antivirus",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 3600,
+    "syntax": "Checks pkgutil signature, Team ID and Gatekeeper before installer runs.",
+    "env": [
+      "PRODUCT=malwarebytes"
+    ],
+    "variables": [
+      {
+        "name": "INSTALLER_URL",
+        "label": "Installer URL",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "https URL of a .pkg or .dmg to use instead of the vendor default. The Team ID is checked the same way."
+      },
+      {
+        "name": "ALLOW_EXISTING",
+        "label": "Install next to another antivirus",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Only for migrations: two real-time scanners on one machine cause hangs."
+      }
+    ]
+  },
+  {
+    "guid": "f5386f3a-d48d-4a5f-8121-b286419aa3ca",
+    "filename": "mac_antivirus_install.sh",
+    "name": "Microsoft Defender for Endpoint - install",
+    "description": "Installs the Defender for Endpoint package. Needs the tenant onboarding profile and MDM approvals before it protects anything.",
+    "shell": "shell",
+    "category": "macOS / Antivirus",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 3600,
+    "syntax": "Checks pkgutil signature, Team ID and Gatekeeper before installer runs.",
+    "env": [
+      "PRODUCT=defender"
+    ],
+    "variables": [
+      {
+        "name": "INSTALLER_URL",
+        "label": "Installer URL",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "https URL of a .pkg or .dmg to use instead of the vendor default. The Team ID is checked the same way."
+      },
+      {
+        "name": "ALLOW_EXISTING",
+        "label": "Install next to another antivirus",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Only for migrations: two real-time scanners on one machine cause hangs."
+      }
+    ]
+  },
+  {
+    "guid": "6ce8ee8a-4ea3-4591-899c-7df4927d2862",
+    "filename": "mac_inventory_system_report.sh",
+    "name": "System report",
+    "description": "Model, chip, serial, macOS version and build, uptime, memory, storage, IPv4 addresses, battery cycle count and MDM enrollment state.",
+    "shell": "shell",
+    "category": "macOS / Inventory",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 120
+  },
+  {
+    "guid": "72bb19b8-f8c3-4ca8-9ce9-5aa06d8ff221",
+    "filename": "mac_maintenance_clean_caches.sh",
+    "name": "Caches and logs clean",
+    "description": "Removes old files from system and user caches, /Library/Logs and rotated logs in /var/log. Skips com.apple.* caches and app containers. Dry run by default.",
+    "shell": "shell",
+    "category": "macOS / Maintenance",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 600,
+    "variables": [
+      {
+        "name": "DRY_RUN",
+        "label": "Dry run",
+        "type": "checkbox",
+        "required": false,
+        "default": "true",
+        "help": "Only count what would be removed."
+      },
+      {
+        "name": "MAX_AGE_DAYS",
+        "label": "Older than (days)",
+        "type": "integer",
+        "required": false,
+        "default": "30",
+        "help": "Only files not modified for this long."
+      }
+    ]
+  },
+  {
+    "guid": "169efae2-3785-44e6-a470-047d4abf58d1",
+    "filename": "mac_maintenance_flush_dns.sh",
+    "name": "Flush DNS cache",
+    "description": "Flushes the DNS cache and restarts mDNSResponder.",
+    "shell": "shell",
+    "category": "macOS / Maintenance",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "a311d1f2-35d8-438e-b0d2-ae336809c9de",
+    "filename": "mac_maintenance_restart.sh",
+    "name": "Restart or shut down",
+    "description": "Schedules a restart or shutdown with shutdown(8), shows the message to the console user and can cancel a pending one. A pending shutdown is replaced.",
+    "shell": "shell",
+    "category": "macOS / Maintenance",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "MODE",
+        "label": "Action",
+        "type": "select",
+        "required": false,
+        "default": "restart",
+        "options": [
+          "restart",
+          "shutdown",
+          "cancel"
+        ],
+        "help": "Restart, shut down, or cancel a pending shutdown."
+      },
+      {
+        "name": "DELAY_MINUTES",
+        "label": "Delay (minutes)",
+        "type": "integer",
+        "required": false,
+        "default": "1",
+        "help": "0 to 1440. 0 means now."
+      },
+      {
+        "name": "MESSAGE",
+        "label": "Message",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "Shown to the console user. Empty uses a standard text, up to 200 characters."
+      }
+    ]
+  },
+  {
+    "guid": "7e0691f6-a79f-44ba-9cf4-810d040f661d",
+    "filename": "mac_monitoring_disk_space.sh",
+    "name": "Disk space check",
+    "description": "Checks the used space of the data volume (APFS container free space, as df reports it). Exit 2 at the warning level, 1 at the error level.",
+    "shell": "shell",
+    "category": "macOS / Monitoring",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "WARN_PERCENT",
+        "label": "Warn above (%)",
+        "type": "integer",
+        "required": false,
+        "default": "85",
+        "help": "Used space that counts as a warning."
+      },
+      {
+        "name": "ERROR_PERCENT",
+        "label": "Error above (%)",
+        "type": "integer",
+        "required": false,
+        "default": "95",
+        "help": "Used space that counts as a failure."
+      }
+    ]
+  },
+  {
+    "guid": "5f563100-1b2f-4af3-9978-c9ce4fb363ed",
+    "filename": "mac_monitoring_time_machine.sh",
+    "name": "Time Machine check",
+    "description": "Checks that a Time Machine backup exists and is recent. Reads the preferences, falls back to tmutil. Exit 3 when only Full Disk Access would give an answer.",
+    "shell": "shell",
+    "category": "macOS / Monitoring",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "MAX_HOURS",
+        "label": "Max age (hours)",
+        "type": "integer",
+        "required": false,
+        "default": "48",
+        "help": "Oldest accepted age of the latest backup."
+      }
+    ]
+  },
+  {
+    "guid": "069d4641-9101-4536-994c-542b10266351",
+    "filename": "mac_monitoring_uptime.sh",
+    "name": "Uptime check",
+    "description": "Fails when the Mac has not been restarted for too long.",
+    "shell": "shell",
+    "category": "macOS / Monitoring",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "MAX_DAYS",
+        "label": "Max uptime (days)",
+        "type": "integer",
+        "required": false,
+        "default": "30",
+        "help": "Longest accepted time since the last boot."
+      }
+    ]
+  },
+  {
+    "guid": "c54d94d1-d12c-46cd-a206-994da67f11b5",
+    "filename": "mac_network_connectivity.sh",
+    "name": "Connectivity test",
+    "description": "Pings hosts, or opens a TCP connection when a port is given, and optionally resolves a name. Exit 1 when any check fails.",
+    "shell": "shell",
+    "category": "macOS / Network",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 180,
+    "variables": [
+      {
+        "name": "TARGETS",
+        "label": "Targets",
+        "type": "text",
+        "required": false,
+        "default": "",
+        "help": "host or host:port, one per line or comma separated, up to 50."
+      },
+      {
+        "name": "DNS_NAME",
+        "label": "Name to resolve",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "Optional host name that must resolve."
+      }
+    ]
+  },
+  {
+    "guid": "7fc5bf81-d002-4690-8b6e-57d95c31a023",
+    "filename": "mac_network_dns.sh",
+    "name": "DNS report",
+    "description": "Resolvers and search domains from scutil --dns plus test lookups. Exit 2 when some lookups fail, 1 when none work or no resolver is set.",
+    "shell": "shell",
+    "category": "macOS / Network",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 120
+  },
+  {
+    "guid": "953206b7-340d-4b6d-91c2-4ca024563032",
+    "filename": "mac_network_wifi.sh",
+    "name": "Wi-Fi report",
+    "description": "Interface, power, SSID, signal and security of the Wi-Fi link. The SSID is hidden by macOS privacy rules on recent versions and the report says so.",
+    "shell": "shell",
+    "category": "macOS / Network",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "c88900b9-34f2-4590-95c2-669cef7d32ff",
+    "filename": "mac_security_firewall.sh",
+    "name": "Application firewall",
+    "description": "Shows or sets the application firewall. Exit 1 when it is off in status mode or a change did not take effect (a managed profile can enforce the setting).",
+    "shell": "shell",
+    "category": "macOS / Security",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "STATE",
+        "label": "Action",
+        "type": "select",
+        "required": false,
+        "default": "status",
+        "options": [
+          "status",
+          "on",
+          "off"
+        ],
+        "help": "Status only, turn the firewall on, or turn it off."
+      },
+      {
+        "name": "STEALTH",
+        "label": "Stealth mode",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "With Action on: also turn stealth mode on. Never turns it off."
+      }
+    ]
+  },
+  {
+    "guid": "15310af6-fc39-43f3-853d-30ca915168c1",
+    "filename": "mac_security_filevault.sh",
+    "name": "FileVault status",
+    "description": "Reports whether FileVault disk encryption is on. Exit 0 on, 2 while encrypting or decrypting, 1 off.",
+    "shell": "shell",
+    "category": "macOS / Security",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "94e61624-1379-412f-8c82-7819e282fc84",
+    "filename": "mac_security_remote_login.sh",
+    "name": "Remote Login (SSH)",
+    "description": "Shows or sets Remote Login. Uses systemsetup and falls back to launchctl when the agent lacks Full Disk Access. Exit 1 when the wanted state is not reached.",
+    "shell": "shell",
+    "category": "macOS / Security",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "STATE",
+        "label": "Action",
+        "type": "select",
+        "required": false,
+        "default": "status",
+        "options": [
+          "status",
+          "on",
+          "off"
+        ],
+        "help": "Status only, turn Remote Login on, or turn it off."
+      }
+    ]
+  },
+  {
+    "guid": "3181194e-f75a-44e4-b561-4e249c8074fd",
+    "filename": "mac_security_integrity.sh",
+    "name": "System integrity report",
+    "description": "Reports SIP, the authenticated root volume and Gatekeeper. Changes nothing. Exit 1 when SIP or Gatekeeper is off, 2 for a custom SIP setup.",
+    "shell": "shell",
+    "category": "macOS / Security",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 60
+  },
+  {
+    "guid": "0d2ff129-10d3-4c59-b460-184fd5c2b522",
+    "filename": "mac_software_command_line_tools.sh",
+    "name": "Command Line Tools install",
+    "description": "Installs the Command Line Tools through the softwareupdate placeholder method. Does nothing when they are installed.",
+    "shell": "shell",
+    "category": "macOS / Software",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 1800
+  },
+  {
+    "guid": "b4ffd599-01c2-4efa-95d3-96e1ee3679a8",
+    "filename": "mac_software_homebrew_outdated.sh",
+    "name": "Homebrew outdated report",
+    "description": "Lists outdated formulae and casks of /opt/homebrew and /usr/local, run as the owner of each installation. Report only, no update.",
+    "shell": "shell",
+    "category": "macOS / Software",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 300
+  },
+  {
+    "guid": "029009a7-f904-45e7-af7a-b292b4347b93",
+    "filename": "mac_software_rosetta.sh",
+    "name": "Rosetta install",
+    "description": "Installs Rosetta 2 on Apple silicon through softwareupdate. Exit 3 on Intel Macs.",
+    "shell": "shell",
+    "category": "macOS / Software",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 900
+  },
+  {
+    "guid": "880c5803-61d4-48c4-9e30-11d8ffba804f",
+    "filename": "mac_system_computer_name.sh",
+    "name": "Computer name",
+    "description": "Shows or sets ComputerName, LocalHostName and HostName. The host names are reduced to letters, digits and hyphens.",
+    "shell": "shell",
+    "category": "macOS / System",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "NAME",
+        "label": "New name",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "Empty only reports the current names. Up to 63 characters."
+      }
+    ]
+  },
+  {
+    "guid": "ad197085-f2e5-4b58-a503-c16a89296f8a",
+    "filename": "mac_system_timezone.sh",
+    "name": "Time zone",
+    "description": "Shows or sets the time zone. Warns when automatic time zone by location is on.",
+    "shell": "shell",
+    "category": "macOS / System",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "TIMEZONE",
+        "label": "Time zone",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "IANA name such as Europe/Berlin. Empty only reports the current one."
+      }
+    ]
+  },
+  {
+    "guid": "56308ffe-97fe-42c8-9a62-2af2a5014abc",
+    "filename": "mac_users_admin.sh",
+    "name": "Administrator rights",
+    "description": "Grants or revokes administrator rights of a local user. Refuses to remove the last enabled administrator.",
+    "shell": "shell",
+    "category": "macOS / Users",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 60,
+    "variables": [
+      {
+        "name": "TARGET_USER",
+        "label": "Short name",
+        "type": "string",
+        "required": true,
+        "default": "",
+        "help": "Local account."
+      },
+      {
+        "name": "STATE",
+        "label": "Action",
+        "type": "select",
+        "required": true,
+        "default": "grant",
+        "options": [
+          "grant",
+          "revoke"
+        ],
+        "help": "Grant or revoke administrator rights."
+      }
+    ]
+  },
+  {
+    "guid": "070c03f8-25a8-48cd-ab77-8bc0ecfd38c0",
+    "filename": "mac_users_console_user.sh",
+    "name": "Console user collector",
+    "description": "Prints the short name of the user at the screen, or none. The last line is the value.",
+    "shell": "shell",
+    "category": "macOS / Users",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 30
+  },
+  {
+    "guid": "972dbb8c-637b-40b6-a720-1a5f751e73bb",
+    "filename": "mac_users_create.sh",
+    "name": "Create user",
+    "description": "Creates a local user with sysadminctl and reads the password from stdin. The account gets no Secure Token unless it is the first one. Does nothing when the user exists.",
+    "shell": "shell",
+    "category": "macOS / Users",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "TARGET_USER",
+        "label": "Short name",
+        "type": "string",
+        "required": true,
+        "default": "",
+        "help": "Lowercase letters, digits, _ . -, up to 31 characters."
+      },
+      {
+        "name": "FULL_NAME",
+        "label": "Full name",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "help": "Letters, digits, space and . _ ' -. Empty uses the short name."
+      },
+      {
+        "name": "PASSWORD",
+        "label": "Password",
+        "type": "password",
+        "required": true,
+        "default": "",
+        "help": "8 to 128 characters. Visible in the run history of this task."
+      },
+      {
+        "name": "ADMINISTRATOR",
+        "label": "Administrator",
+        "type": "checkbox",
+        "required": false,
+        "default": "false",
+        "help": "Add the user to the admin group."
+      }
+    ]
+  },
+  {
+    "guid": "a3ef7124-6531-49e1-b1f9-831906b55eba",
+    "filename": "mac_users_list.sh",
+    "name": "Users list",
+    "description": "Lists local accounts with UID, admin rights, Secure Token state, disabled flag and last login.",
+    "shell": "shell",
+    "category": "macOS / Users",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 120
+  },
+  {
+    "guid": "cd4c4767-4e73-4a83-b0ea-af4152f783f2",
+    "filename": "win_users_laps_rotate.ps1",
+    "name": "Rotate local admin password",
+    "description": "Rotates the password of a local administrator account and creates it when missing. The password is read from the environment, never printed. Sets the password to never expire.",
+    "shell": "powershell",
+    "category": "Windows / Users",
+    "supported_platforms": [
+      "windows"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "TARGET_USER",
+        "label": "Account name",
+        "type": "string",
+        "required": true,
+        "help": "Local account whose password is rotated, for example ulrmm-admin."
+      },
+      {
+        "name": "NEW_PASSWORD",
+        "label": "New password",
+        "type": "password",
+        "required": true,
+        "help": "8 to 128 characters, generated by the server."
+      },
+      {
+        "name": "CREATE_IF_MISSING",
+        "label": "Create the account when missing",
+        "type": "checkbox",
+        "required": false,
+        "default": "true",
+        "help": "The new account joins the administrators group."
+      }
+    ]
+  },
+  {
+    "guid": "ac2bdaae-1f5e-4514-b431-439beb8c404d",
+    "filename": "linux_users_laps_rotate.sh",
+    "name": "Rotate local admin password",
+    "description": "Rotates the password of a local administrator account and creates it when missing. Uses chpasswd on stdin; new accounts join sudo or wheel. Refuses locked and system accounts.",
+    "shell": "shell",
+    "category": "Linux / Users",
+    "supported_platforms": [
+      "linux"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "TARGET_USER",
+        "label": "Account name",
+        "type": "string",
+        "required": true,
+        "help": "Local account whose password is rotated, for example ulrmm-admin."
+      },
+      {
+        "name": "NEW_PASSWORD",
+        "label": "New password",
+        "type": "password",
+        "required": true,
+        "help": "8 to 128 characters, generated by the server."
+      },
+      {
+        "name": "CREATE_IF_MISSING",
+        "label": "Create the account when missing",
+        "type": "checkbox",
+        "required": false,
+        "default": "true",
+        "help": "The new account joins the administrators group."
+      }
+    ]
+  },
+  {
+    "guid": "97aa323f-9e82-418d-b770-f7e7d7b3e597",
+    "filename": "mac_users_laps_rotate.sh",
+    "name": "Rotate local admin password",
+    "description": "Rotates a local administrator password, creates the account when missing. Secure token caveat: an account holding a secure token may need a token-holding admin, then the rotation fails.",
+    "shell": "shell",
+    "category": "macOS / Users",
+    "supported_platforms": [
+      "darwin"
+    ],
+    "default_timeout": 120,
+    "variables": [
+      {
+        "name": "TARGET_USER",
+        "label": "Account name",
+        "type": "string",
+        "required": true,
+        "help": "Local account whose password is rotated, for example ulrmm-admin."
+      },
+      {
+        "name": "NEW_PASSWORD",
+        "label": "New password",
+        "type": "password",
+        "required": true,
+        "help": "8 to 128 characters, generated by the server."
+      },
+      {
+        "name": "CREATE_IF_MISSING",
+        "label": "Create the account when missing",
+        "type": "checkbox",
+        "required": false,
+        "default": "true",
+        "help": "The new account joins the administrators group."
+      }
+    ]
+  }
+]
