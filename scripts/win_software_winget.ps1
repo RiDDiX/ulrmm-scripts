@@ -19,19 +19,29 @@ $dirs = @(Get-ChildItem -Path (Join-Path $apps 'Microsoft.DesktopAppInstaller_*_
 $best = $null
 foreach ($d in $dirs) {
     if ($d.Name -notmatch '_(x64|arm64)__') { continue }
+    $arch = $Matches[1]
     $ver = $null
     if ($d.Name -match '_([0-9.]+)_') { $ver = [version]$Matches[1] }
     if (-not (Test-Path -LiteralPath (Join-Path $d.FullName 'winget.exe'))) { continue }
-    if (-not $best -or $ver -gt $best.Ver) { $best = @{ Ver = $ver; Path = (Join-Path $d.FullName 'winget.exe') } }
+    if (-not $best -or $ver -gt $best.Ver) { $best = @{ Ver = $ver; Arch = $arch; Path = (Join-Path $d.FullName 'winget.exe') } }
 }
 if ($best) { $exe = $best.Path }
 if (-not $exe) { Write-Output 'winget is not available on this system (needs Windows 10 1809+ or 11 with App Installer; not on Server 2016/2019 or LTSC without it)'; exit 3 }
+
+# As SYSTEM nothing resolves the VC++ runtime winget links against (exit 0xC0000135); its package folder on PATH fixes that.
+$vc = $null
+foreach ($d in @(Get-ChildItem -Path (Join-Path $apps "Microsoft.VCLibs.140.00.UWPDesktop_*_$($best.Arch)__8wekyb3d8bbwe") -Directory -ErrorAction SilentlyContinue)) {
+    if ($d.Name -notmatch '_([0-9.]+)_' -or -not (Test-Path -Path (Join-Path $d.FullName '*.dll'))) { continue }
+    $ver = [version]$Matches[1]
+    if (-not $vc -or $ver -gt $vc.Ver) { $vc = @{ Ver = $ver; Path = $d.FullName } }
+}
+if ($vc) { $env:PATH = $vc.Path + ';' + (Split-Path -Parent $exe) + ';' + $env:PATH }
 
 try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch { Write-Verbose 'no console to set the encoding on' }
 $common = @('--accept-source-agreements', '--disable-interactivity')
 $pkg = @('--id', $id, '--exact', '--silent', '--scope', 'machine', '--accept-package-agreements')
 switch ($action) {
-    'list' { $arguments = @('upgrade') + $common }
+    'list' { $arguments = @('upgrade', '--include-unknown') + $common }
     'upgrade all' { $arguments = @('upgrade', '--all', '--silent', '--scope', 'machine', '--accept-package-agreements') + $common }
     'install' { $arguments = @('install') + $pkg + $common }
     'upgrade' { $arguments = @('upgrade') + $pkg + $common }
@@ -48,9 +58,11 @@ foreach ($l in $out) {
     Write-Output $l.TrimEnd()
 }
 if ($rc -eq 0) { Write-Output 'winget finished successfully'; exit 0 }
+if ($rc -eq -1978334967) { Write-Output 'winget finished, a restart is pending to complete it'; exit 0 }
 if ($rc -eq -1978335189) { Write-Output "winget: no applicable update (code $rc)"; exit 0 }
 if ($rc -eq -1978335135 -and $action -eq 'install') { Write-Output "$id is already installed"; exit 0 }
 if ($rc -eq -1978335212 -and $action -eq 'uninstall') { Write-Output "No installed package $id found in machine scope, nothing to remove"; exit 0 }
 if ($rc -eq -1073741515) { Write-Output 'winget could not start as SYSTEM: install the Microsoft Visual C++ 2015-2022 Redistributable'; exit 1 }
+if ($rc -eq -1978335216) { Write-Output 'winget found no installer for all users (machine scope) for this package' }
 Write-Output "winget exit code $rc"
 exit 1
